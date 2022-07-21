@@ -1,0 +1,26 @@
+.btn{
+    -fx-background-color: #0d78c5;
+    -fx-text-fill: white;
+    -fx-font-size: 12;
+    -fx-max-width: 130;
+}
+
+.title{
+    -fx-background-color: #0e6eb0;
+}
+.heading{
+    -fx-text-fill: white;
+    -fx-font-size: 30;
+}
+
+.separator .line{
+    -fx-border-style: solid;
+    -fx-border-color: #5f0eab;
+    -fx-border-width: 7px;
+
+}
+
+.password-field, .text-field{
+    -fx-max-width: 200;
+}
+

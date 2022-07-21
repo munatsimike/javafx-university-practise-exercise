@@ -1,14 +1,11 @@
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import views.LoginScreen;
 
 public class university extends Application {
     @Override
-    public void start(Stage stage) throws Exception {
-        Scene scene = new Scene(new BorderPane(new Text("Michael")));
-        stage.setScene(scene);
-        stage.show();
+    public void start(Stage stage) {
+        LoginScreen loginScreen = new LoginScreen(stage);
+        loginScreen.getLoginScreen().show();
     }
 }
