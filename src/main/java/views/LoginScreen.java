@@ -15,9 +15,11 @@ public class LoginScreen {
     Button loginBtn;
     Button cancelBtn;
     Stage stage;
+    MainWindow mainWindow;
 
     public LoginScreen(Stage stage) {
         this.stage = stage;
+        mainWindow = new MainWindow(this);
     }
 
     public Stage getLoginScreen() {
@@ -52,7 +54,7 @@ public class LoginScreen {
 
     private Button cancelBtn() {
         cancelBtn = new Button("Cancel");
-        cancelBtn.setStyle("-fx-background-color: grey");
+        cancelBtn.setStyle("-fx-background-color: #aba7a7");
         cancelBtn.setMaxWidth(130);
         cancelBtnEventHandler();
         return cancelBtn;
@@ -74,7 +76,7 @@ public class LoginScreen {
         Label label = new Label("University Project");
         label.getStyleClass().add("heading");
         hBox.getChildren().addAll(logo(), label);
-        hBox.getStyleClass().add("title");
+        hBox.getStyleClass().add("bleu-background");
         hBox.setAlignment(Pos.CENTER);
         return hBox;
     }
@@ -90,7 +92,8 @@ public class LoginScreen {
 
     private void loginBtnEventHandler() {
         loginBtn.setOnMouseClicked(e -> {
-
+            stage.hide();
+            mainWindow.getMainScreen().show();
         });
     }
 

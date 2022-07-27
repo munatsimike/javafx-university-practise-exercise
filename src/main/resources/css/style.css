@@ -1,26 +1,37 @@
-.btn{
+.btn {
     -fx-background-color: #0d78c5;
     -fx-text-fill: white;
     -fx-font-size: 12;
     -fx-max-width: 130;
 }
 
-.title{
+.bleu-background {
     -fx-background-color: #0e6eb0;
 }
-.heading{
+
+.heading {
     -fx-text-fill: white;
     -fx-font-size: 30;
 }
 
-.separator .line{
+.separator .line {
     -fx-border-style: solid;
-    -fx-border-color: #5f0eab;
+    -fx-border-color: #602424;
     -fx-border-width: 7px;
-
 }
 
-.password-field, .text-field{
+.password-field, .text-field {
     -fx-max-width: 200;
+}
+
+.toggle-button{
+    -fx-min-width: 100;
+    -fx-font-size: 13;
+    -fx-text-fill: white;
+}
+
+.menu-logo{
+    -fx-text-fill: white;
+    -fx-font-size: 17;
 }
 
