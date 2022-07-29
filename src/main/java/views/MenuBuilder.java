@@ -1,8 +1,12 @@
 package views;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -13,32 +17,28 @@ public class MenuBuilder {
     ToggleButton dashboard;
     ToggleButton students;
     ToggleButton teachers;
+    StringProperty selectedBtn;
 
     public MenuBuilder() {
         vBox = new VBox(20);
-    }
-
-    public VBox getMenu() {
-        vBox.setPrefWidth(175);
-        vBox.getStyleClass().add("bleu-background");
-        vBox.setAlignment(Pos.BASELINE_CENTER);
-
+        selectedBtn = new SimpleStringProperty();
         menuBtn();
-        return vBox;
+        toggle();
+        btnHandler();
     }
 
     private void menuBtn() {
         dashboard = new ToggleButton("Dashboard");
         students = new ToggleButton("Students");
         teachers = new ToggleButton("Teachers");
+    }
 
-        toggle();
-        dashboardBtnHandler();
-        studentsBtnHandler();
-        teachersBtnHandler();
-        dashboard.setSelected(true);
-
+    public VBox getMenu() {
+        vBox.setPrefWidth(175);
+        vBox.getStyleClass().add("bleu-background");
+        vBox.setAlignment(Pos.BASELINE_CENTER);
         vBox.getChildren().addAll(logoTitle(), dashboard, students, teachers);
+        return vBox;
     }
 
     private void toggle() {
@@ -68,21 +68,13 @@ public class MenuBuilder {
         return hBox;
     }
 
-    private void dashboardBtnHandler() {
-        dashboard.setOnMouseClicked(e -> {
-            System.out.println("dashboard");
-        });
+    private void btnHandler() {
+        dashboard.setOnAction(e -> selectedBtn.set(dashboard.textProperty().get()));
+        teachers.setOnAction(e -> selectedBtn.set(teachers.textProperty().get()));
+        students.setOnAction(e -> selectedBtn.set(students.textProperty().get()));
     }
 
-    private void studentsBtnHandler() {
-        students.setOnMouseClicked(e -> {
-            System.out.println("students");
-        });
-    }
-
-    private void teachersBtnHandler() {
-        teachers.setOnMouseClicked(e -> {
-            System.out.println("teachers");
-        });
+    public StringProperty selectedBtn() {
+        return selectedBtn;
     }
 }
