@@ -28,6 +28,8 @@ public class MainWindow {
     TableView<Person> students;
     TableView<Person> teachers;
     Pane tableViewPane;
+    FormBtnOptions formBtnOptions;
+    FormFields formFields;
 
     public MainWindow(LoginScreen screen, String loggedInUser) {
         this.screen = screen;
@@ -36,9 +38,12 @@ public class MainWindow {
         menuBuilder = new MenuBuilder();
         database = new Database();
         label = new Label();
+        formBtnOptions = new FormBtnOptions();
+        formFields = new FormFields();
         pane();
         vBox();
         menuSelectedBtn();
+        formSelectedButton();
     }
 
     private void pane() {
@@ -47,8 +52,8 @@ public class MainWindow {
     }
 
     private void vBox() {
-        vBox = new VBox();
-        vBox.setPadding(new Insets(25));
+        vBox = new VBox(25);
+        vBox.setPadding(new Insets(20));
         vBox.setStyle("-fx-background-color: white");
     }
 
@@ -56,13 +61,24 @@ public class MainWindow {
         menuBuilder.selectedBtn().addListener((observableValue, s, t1) -> {
             if (s != null) {
                 showContent(MenuOption.valueOf(t1.toUpperCase()));
+                formBtnOptions.setBtnTex(MenuOption.valueOf(t1.toUpperCase()));
+            }
+        });
+    }
+
+    private void formSelectedButton() {
+        formBtnOptions.getSelectedFormBtn().addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals("Add Students")) {
+                clearPane();
+                formBtnOptions.getFrom().setVisible(false);
+                tableViewPane.getChildren().add(formFields.formFields());
             }
         });
     }
 
     public Stage getMainScreen() {
         setHeaderLabelTxt(WELCOME_NOTE + loggedInUser);
-        vBox.getChildren().addAll(label, tableViewPane);
+        vBox.getChildren().addAll(label, tableViewPane, formBtnOptions.getFrom());
         Window window = new Window(new HBox(menuBuilder.getMenu(), vBox));
         stage = window.getWindow();
         stage.setHeight(600);

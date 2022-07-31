@@ -25,8 +25,8 @@
 }
 
 .toggle-button {
-    -fx-min-width: 100;
-    -fx-font-size: 13;
+    -fx-min-width: 120;
+    -fx-font-size: 14;
     -fx-text-fill: white;
 }
 
@@ -41,6 +41,18 @@
 
 .table-cell {
     -fx-border-width: 0px;
+}
+
+.blue-btn{
+    -fx-background-color: blue;
+}
+
+.red-btn{
+    -fx-background-color: red;
+}
+
+.grey-btn{
+    -fx-background-color: grey;
 }
 
 .table-view .column-header {
