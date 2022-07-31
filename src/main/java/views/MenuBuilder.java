@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import model.MenuOption;
 
 public class MenuBuilder {
     VBox vBox;
@@ -21,16 +22,17 @@ public class MenuBuilder {
 
     public MenuBuilder() {
         vBox = new VBox(20);
-        selectedBtn = new SimpleStringProperty();
+        selectedBtn = new SimpleStringProperty("");
         menuBtn();
         toggle();
         btnHandler();
     }
 
     private void menuBtn() {
-        dashboard = new ToggleButton("Dashboard");
-        students = new ToggleButton("Students");
-        teachers = new ToggleButton("Teachers");
+        dashboard = new ToggleButton(MenuOption.DASHBOARD.toString());
+        students = new ToggleButton(MenuOption.STUDENTS.toString());
+        teachers = new ToggleButton(MenuOption.TEACHERS.toString());
+        dashboard.setSelected(true);
     }
 
     public VBox getMenu() {

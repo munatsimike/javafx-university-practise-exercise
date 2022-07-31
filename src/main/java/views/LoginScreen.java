@@ -19,7 +19,7 @@ public class LoginScreen {
 
     public LoginScreen(Stage stage) {
         this.stage = stage;
-        mainWindow = new MainWindow(this);
+        mainWindow = new MainWindow(this, "Michael");
     }
 
     public Stage getLoginScreen() {
