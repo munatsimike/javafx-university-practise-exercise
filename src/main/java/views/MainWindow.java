@@ -39,7 +39,7 @@ public class MainWindow {
         database = new Database();
         label = new Label();
         formBtnOptions = new FormBtnOptions();
-        formFields = new FormFields();
+        formFields = new FormFields(database);
         pane();
         vBox();
         menuSelectedBtn();

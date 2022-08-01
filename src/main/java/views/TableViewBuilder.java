@@ -55,8 +55,8 @@ public class TableViewBuilder {
     }
 
     private void removeColumn() {
-        if (tableView.getColumns().size() == 4) {
-            tableView.getColumns().remove(3);
+        if (tableView.getColumns().size() == 5) {
+            tableView.getColumns().remove(4);
         }
     }
 }

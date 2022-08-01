@@ -33,7 +33,7 @@ public class Database {
         }
     }
 
-    public int idGenerator() {
+    public int getId() {
         int id = persons.size();
         return id++;
     }
@@ -41,5 +41,6 @@ public class Database {
     public void addPerson(Person person){
         persons.add(person);
     }
+
 
 }

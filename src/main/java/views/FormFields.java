@@ -8,6 +8,8 @@ import javafx.scene.layout.VBox;
 import model.Student;
 import model.StudentGroup;
 
+import java.sql.Date;
+
 public class FormFields {
     TextField username;
     PasswordField passwordField;
@@ -37,15 +39,16 @@ public class FormFields {
         hBox();
         gridPane();
         toggleGroup();
+        addStudentBtnHandler();
     }
 
-    private void toggleGroup(){
+    private void toggleGroup() {
         ToggleGroup toggleGroup = new ToggleGroup();
         addStudentBtn.setToggleGroup(toggleGroup);
         cancelBtn.setToggleGroup(toggleGroup);
     }
 
-    private void textPrompts(){
+    private void textPrompts() {
         firstNameTxtField.setPromptText("First name");
         passwordField.setPromptText("Password");
         username.setPromptText("Username");
@@ -53,7 +56,7 @@ public class FormFields {
         datePicker.setPromptText("Date of birth");
     }
 
-    private void comboBox(){
+    private void comboBox() {
         comboBox = new ComboBox<>();
         comboBox.getItems().addAll(StudentGroup.INFO2A.toString(), StudentGroup.INFO2B.toString());
         comboBox.setPromptText("Select group");
@@ -66,7 +69,7 @@ public class FormFields {
         cancelBtn.setMinWidth(100);
     }
 
-    private void addStudentBtn(){
+    private void addStudentBtn() {
         addStudentBtn = new ToggleButton("Add student");
         addStudentBtn.getStyleClass().add("blue-btn");
         addStudentBtn.setMinWidth(100);
@@ -94,5 +97,11 @@ public class FormFields {
         vBox.getChildren().addAll(gridPane, hBox);
         return vBox;
     }
-    
+
+    private void addStudentBtnHandler() {
+        addStudentBtn.setOnMouseClicked(event -> {
+            Student student = new Student(database.getId(), username.getText(), passwordField.getText(), firstNameTxtField.getText(), lastNameTxtField.getText(), Date.valueOf(datePicker.getValue()), comboBox.getPromptText());
+            database.addPerson(student);
+        });
+    }
 }
