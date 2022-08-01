@@ -70,6 +70,7 @@ public class MainWindow {
     private void formMenuOptionChangeListener() {
         formMenuOptions.getSelectedFormBtn().addListener((observable, oldValue, newValue) -> {
             if (newValue.equals("Add Students")) {
+                label.setText(newValue);
                 clearPane();
                 label.setText(newValue);
                 tableViewPane.getChildren().add(formFields.formFields());
