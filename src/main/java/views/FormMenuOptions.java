@@ -15,9 +15,9 @@ public class FormMenuOptions {
     ToggleButton editButton;
     ToggleButton deleteButton;
     ToggleGroup toggleGroup;
-    HBox hBox;
     List<ToggleButton> toggleButtons;
     StringProperty selectedFormBtn;
+    HBox hBox;
 
     public FormMenuOptions() {
         addButton = new ToggleButton("Add ");
@@ -68,7 +68,6 @@ public class FormMenuOptions {
         } else {
             isVisible(false);
         }
-
     }
 
     private void btnHandler() {

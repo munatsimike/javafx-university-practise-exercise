@@ -11,7 +11,7 @@ import model.Student;
 import model.StudentGroup;
 
 import java.sql.Date;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
 
 public class FormFields {
     TextField username;
@@ -27,6 +27,8 @@ public class FormFields {
     VBox vBox;
     Database database;
     BooleanProperty iSelected;
+    List<TextField> textFields;
+    MyAlert myAlert;
 
     public FormFields(Database database) {
         this.database = database;
@@ -48,6 +50,7 @@ public class FormFields {
 
         vBox = new VBox(50);
         vBox.getChildren().addAll(gridPane, hBox);
+        textFields = List.of(username, passwordField, firstNameTxtField, lastNameTxtField);
     }
 
     private void toggleGroup() {
@@ -106,13 +109,15 @@ public class FormFields {
 
     private void addStudentBtnHandler() {
         addStudentBtn.setOnMouseClicked(event -> {
+            validateForm();
             Student student = new Student(database.getId(), username.getText(), passwordField.getText(), firstNameTxtField.getText(), lastNameTxtField.getText(), Date.valueOf(datePicker.getValue()), comboBox.getPromptText());
             database.addPerson(student);
+            confirmationAlert();
         });
     }
 
     private void cancelBtnHandler() {
-        cancelBtn.setOnMouseClicked(event ->{
+        cancelBtn.setOnMouseClicked(event -> {
             iSelected.set(true);
             iSelected.set(false);
         });
@@ -122,4 +127,48 @@ public class FormFields {
         return iSelected;
     }
 
+    public void validateForm() {
+        for (TextField field : textFields) {
+            if (field.getText().length() < 4) {
+            }
+        }
+    }
+
+    private void confirmationAlert() {
+        myAlert = new MyAlert(Alert.AlertType.CONFIRMATION, "Student successfully saved");
+        alertStatus();
+        myAlert.showAlert();
+    }
+
+    private void alertStatus() {
+        myAlert.alertStatus().addListener((observableValue, s, t1) -> {
+            if (t1) {
+                clearForm();
+            }
+        });
+    }
+
+    private void clearForm() {
+        for (TextField field : textFields) {
+            field.setText("");
+        }
+
+        datePicker.setValue(null);
+        resetComboboxToPromptText(comboBox);
+    }
+
+    private void resetComboboxToPromptText(ComboBox<String> comboBox) {
+        comboBox.getSelectionModel().clearSelection();
+        comboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(comboBox.getPromptText());
+                } else {
+                    setText(item);
+                }
+            }
+        });
+    }
 }
