@@ -1,6 +1,7 @@
 package views;
 
 import database.Database;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -9,6 +10,7 @@ import model.Student;
 import model.StudentGroup;
 
 import java.sql.Date;
+import java.util.List;
 
 public class FormFields {
     TextField username;
@@ -23,6 +25,7 @@ public class FormFields {
     HBox hBox;
     VBox vBox;
     Database database;
+    MyAlert myAlert;
 
     public FormFields(Database database) {
         this.database = database;
@@ -31,7 +34,6 @@ public class FormFields {
         firstNameTxtField = new TextField();
         lastNameTxtField = new TextField();
         datePicker = new DatePicker();
-        vBox = new VBox(50);
         textPrompts();
         comboBox();
         cancelBtn();
@@ -40,6 +42,12 @@ public class FormFields {
         gridPane();
         toggleGroup();
         addStudentBtnHandler();
+        vBox = new VBox(50);
+        vBox.getChildren().addAll(gridPane, hBox);
+    }
+
+    private List<Node> formFieldsList() {
+        return List.of(username, passwordField, firstNameTxtField, lastNameTxtField, datePicker, comboBox);
     }
 
     private void toggleGroup() {
@@ -75,7 +83,6 @@ public class FormFields {
         addStudentBtn.setMinWidth(100);
     }
 
-
     private void hBox() {
         hBox = new HBox(20);
         hBox.getChildren().addAll(addStudentBtn, cancelBtn);
@@ -94,14 +101,32 @@ public class FormFields {
     }
 
     public VBox formFields() {
-        vBox.getChildren().addAll(gridPane, hBox);
         return vBox;
     }
 
     private void addStudentBtnHandler() {
         addStudentBtn.setOnMouseClicked(event -> {
-            Student student = new Student(database.getId(), username.getText(), passwordField.getText(), firstNameTxtField.getText(), lastNameTxtField.getText(), Date.valueOf(datePicker.getValue()), comboBox.getPromptText());
+            Student student = new Student(database.getId(), username.getText(), passwordField.getText(), firstNameTxtField.getText(), lastNameTxtField.getText(), Date.valueOf(datePicker.getValue()), comboBox.getValue());
             database.addPerson(student);
+            confirmationAlert();
         });
+    }
+    
+    private void confirmationAlert() {
+        myAlert = new MyAlert(Alert.AlertType.CONFIRMATION, "Student successfully saved");
+        myAlert.showAlert();
+        alertStatus();
+    }
+
+    private void alertStatus() {
+       myAlert.alertStatus().addListener((observableValue, s, t1) -> {
+           System.out.println(t1);
+       });
+    }
+
+    private void clearForm() {
+        for (Node node : formFieldsList()) {
+            node.setVisible(false);
+        }
     }
 }

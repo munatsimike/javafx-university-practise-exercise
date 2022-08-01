@@ -1,2 +1,6 @@
-package model;public enum AlertStatus {
+package model;
+
+public enum AlertStatus {
+    CLOSED,
+    SHOWN
 }

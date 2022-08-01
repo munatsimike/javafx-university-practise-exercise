@@ -45,7 +45,7 @@ public class FormBtnOptions {
         }
     }
 
-    private void hBox (){
+    private void hBox() {
         hBox = new HBox();
         hBox.setSpacing(25);
         hBox.getChildren().addAll(addButton, editButton, deleteButton);
@@ -53,6 +53,7 @@ public class FormBtnOptions {
     }
 
     public HBox getFrom() {
+        resetToggleBtns();
         return hBox;
     }
 
@@ -65,17 +66,17 @@ public class FormBtnOptions {
         } else if (selectedBtn.equals(MenuOption.STUDENTS)) {
             for (ToggleButton toggleButton : toggleButtons)
                 toggleButton.setText(toggleButton.getText().replaceAll("\\s.*", " " + MenuOption.STUDENTS));
-
         } else {
-            resetToggleBtns();
             hBox.setVisible(false);
         }
-
     }
 
     private void btnHandler() {
         for (ToggleButton toggleButton : toggleButtons) {
-            toggleButton.setOnMouseClicked(mouseEvent -> selectedFormBtn.set(toggleButton.textProperty().get()));
+            toggleButton.setOnMouseClicked(mouseEvent -> {
+                selectedFormBtn.set(toggleButton.textProperty().get());
+                selectedFormBtn.set("");
+            });
         }
     }
 
@@ -83,7 +84,7 @@ public class FormBtnOptions {
         return selectedFormBtn;
     }
 
-    private void resetToggleBtns(){
+    private void resetToggleBtns() {
         toggleGroup.selectToggle(null);
     }
 }

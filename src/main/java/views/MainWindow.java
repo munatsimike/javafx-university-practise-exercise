@@ -69,6 +69,7 @@ public class MainWindow {
     private void formSelectedButton() {
         formBtnOptions.getSelectedFormBtn().addListener((observable, oldValue, newValue) -> {
             if (newValue.equals("Add Students")) {
+                label.setText(newValue);
                 clearPane();
                 formBtnOptions.getFrom().setVisible(false);
                 tableViewPane.getChildren().add(formFields.formFields());
