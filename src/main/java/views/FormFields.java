@@ -107,11 +107,17 @@ public class FormFields {
         addStudentBtn.setOnMouseClicked(event -> {
             Student student = new Student(database.getId(), username.getText(), passwordField.getText(), firstNameTxtField.getText(), lastNameTxtField.getText(), Date.valueOf(datePicker.getValue()), comboBox.getPromptText());
             database.addPerson(student);
+            showAlert();
         });
     }
 
+    private void showAlert() {
+        MyAlert myAlert = new MyAlert(Alert.AlertType.CONFIRMATION, "Student saved successfully");
+        myAlert.showAlert();
+    }
+
     private void cancelBtnHandler() {
-        cancelBtn.setOnMouseClicked(event ->{
+        cancelBtn.setOnMouseClicked(event -> {
             iSelected.set(true);
             iSelected.set(false);
         });
