@@ -9,7 +9,7 @@ import model.MenuOption;
 
 import java.util.List;
 
-public class FormBtnOptions {
+public class FormMenuOptions {
 
     ToggleButton addButton;
     ToggleButton editButton;
@@ -19,7 +19,7 @@ public class FormBtnOptions {
     List<ToggleButton> toggleButtons;
     StringProperty selectedFormBtn;
 
-    public FormBtnOptions() {
+    public FormMenuOptions() {
         addButton = new ToggleButton("Add ");
         editButton = new ToggleButton("Edit ");
         deleteButton = new ToggleButton("Delete ");
@@ -45,19 +45,18 @@ public class FormBtnOptions {
         }
     }
 
-    private void hBox (){
+    private void hBox() {
         hBox = new HBox();
         hBox.setSpacing(25);
         hBox.getChildren().addAll(addButton, editButton, deleteButton);
-        hBox.setVisible(false);
+        isVisible(false);
     }
 
-    public HBox getFrom() {
+    public HBox getFromOptions() {
         return hBox;
     }
 
     public void setBtnTex(MenuOption selectedBtn) {
-        hBox.setVisible(true);
         if (selectedBtn.equals(MenuOption.TEACHERS)) {
             for (ToggleButton toggleButton : toggleButtons)
                 toggleButton.setText(toggleButton.getText().replaceAll("\\s.*", " " + MenuOption.TEACHERS));
@@ -67,15 +66,19 @@ public class FormBtnOptions {
                 toggleButton.setText(toggleButton.getText().replaceAll("\\s.*", " " + MenuOption.STUDENTS));
 
         } else {
-            resetToggleBtns();
-            hBox.setVisible(false);
+            isVisible(false);
         }
 
     }
 
     private void btnHandler() {
         for (ToggleButton toggleButton : toggleButtons) {
-            toggleButton.setOnMouseClicked(mouseEvent -> selectedFormBtn.set(toggleButton.textProperty().get()));
+            toggleButton.setOnMouseClicked(mouseEvent -> {
+                selectedFormBtn.set(toggleButton.textProperty().get());
+                selectedFormBtn.set("");
+                if (toggleButton.textProperty().get().equals("Add Students"))
+                    isVisible(false);
+            });
         }
     }
 
@@ -83,7 +86,11 @@ public class FormBtnOptions {
         return selectedFormBtn;
     }
 
-    private void resetToggleBtns(){
-        toggleGroup.selectToggle(null);
+    public void isVisible(Boolean visibility) {
+        if (visibility && !hBox.isVisible()) {
+            hBox.setVisible(true);
+        } else if (!visibility && hBox.isVisible()) {
+            hBox.setVisible(false);
+        }
     }
 }

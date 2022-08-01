@@ -28,7 +28,7 @@ public class MainWindow {
     TableView<Person> students;
     TableView<Person> teachers;
     Pane tableViewPane;
-    FormBtnOptions formBtnOptions;
+    FormMenuOptions formMenuOptions;
     FormFields formFields;
 
     public MainWindow(LoginScreen screen, String loggedInUser) {
@@ -38,12 +38,13 @@ public class MainWindow {
         menuBuilder = new MenuBuilder();
         database = new Database();
         label = new Label();
-        formBtnOptions = new FormBtnOptions();
+        formMenuOptions = new FormMenuOptions();
         formFields = new FormFields(database);
         pane();
         vBox();
         menuSelectedBtn();
-        formSelectedButton();
+        formMenuOptionChangeListener();
+        cancelBtnChangeListener();
     }
 
     private void pane() {
@@ -61,16 +62,16 @@ public class MainWindow {
         menuBuilder.selectedBtn().addListener((observableValue, s, t1) -> {
             if (s != null) {
                 showContent(MenuOption.valueOf(t1.toUpperCase()));
-                formBtnOptions.setBtnTex(MenuOption.valueOf(t1.toUpperCase()));
+                formMenuOptions.setBtnTex(MenuOption.valueOf(t1.toUpperCase()));
             }
         });
     }
 
-    private void formSelectedButton() {
-        formBtnOptions.getSelectedFormBtn().addListener((observable, oldValue, newValue) -> {
+    private void formMenuOptionChangeListener() {
+        formMenuOptions.getSelectedFormBtn().addListener((observable, oldValue, newValue) -> {
             if (newValue.equals("Add Students")) {
                 clearPane();
-                formBtnOptions.getFrom().setVisible(false);
+                label.setText(newValue);
                 tableViewPane.getChildren().add(formFields.formFields());
             }
         });
@@ -78,7 +79,7 @@ public class MainWindow {
 
     public Stage getMainScreen() {
         setHeaderLabelTxt(WELCOME_NOTE + loggedInUser);
-        vBox.getChildren().addAll(label, tableViewPane, formBtnOptions.getFrom());
+        vBox.getChildren().addAll(label, tableViewPane, formMenuOptions.getFromOptions());
         Window window = new Window(new HBox(menuBuilder.getMenu(), vBox));
         stage = window.getWindow();
         stage.setHeight(600);
@@ -89,6 +90,7 @@ public class MainWindow {
     }
 
     private TableView<Person> tableView(PersonType person) {
+
         if (person == PersonType.STUDENT) {
             students = tableViewBuilder.getTable(person);
             students.setItems(database.getPersons(person));
@@ -96,6 +98,8 @@ public class MainWindow {
             teachers = tableViewBuilder.getTable(person);
             teachers.setItems(database.getPersons(person));
         }
+        // display form menu buttons if not visible
+        formMenuOptions.isVisible(true);
 
         return (person == PersonType.STUDENT) ? students : teachers;
     }
@@ -131,5 +135,14 @@ public class MainWindow {
         label.setText(txt);
         label.setFont(Font.font("Arial", FontPosture.REGULAR, 30));
         label.setPadding(new Insets(0, 0, 25, 0));
+    }
+
+    // listen to form cancel button clicks
+    private void cancelBtnChangeListener() {
+        formFields.cancelBtnIsSelected().addListener((observableValue, aBoolean, t1) -> {
+            if (t1 && label.textProperty().get().equals("Add Students")) {
+                showContent(MenuOption.STUDENTS);
+            }
+        });
     }
 }

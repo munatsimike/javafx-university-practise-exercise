@@ -1,6 +1,8 @@
 package views;
 
 import database.Database;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -9,6 +11,7 @@ import model.Student;
 import model.StudentGroup;
 
 import java.sql.Date;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class FormFields {
     TextField username;
@@ -23,15 +26,16 @@ public class FormFields {
     HBox hBox;
     VBox vBox;
     Database database;
+    BooleanProperty iSelected;
 
     public FormFields(Database database) {
         this.database = database;
+        iSelected = new SimpleBooleanProperty(false);
         username = new TextField();
         passwordField = new PasswordField();
         firstNameTxtField = new TextField();
         lastNameTxtField = new TextField();
         datePicker = new DatePicker();
-        vBox = new VBox(50);
         textPrompts();
         comboBox();
         cancelBtn();
@@ -40,6 +44,10 @@ public class FormFields {
         gridPane();
         toggleGroup();
         addStudentBtnHandler();
+        cancelBtnHandler();
+
+        vBox = new VBox(50);
+        vBox.getChildren().addAll(gridPane, hBox);
     }
 
     private void toggleGroup() {
@@ -75,7 +83,6 @@ public class FormFields {
         addStudentBtn.setMinWidth(100);
     }
 
-
     private void hBox() {
         hBox = new HBox(20);
         hBox.getChildren().addAll(addStudentBtn, cancelBtn);
@@ -94,7 +101,6 @@ public class FormFields {
     }
 
     public VBox formFields() {
-        vBox.getChildren().addAll(gridPane, hBox);
         return vBox;
     }
 
@@ -104,4 +110,16 @@ public class FormFields {
             database.addPerson(student);
         });
     }
+
+    private void cancelBtnHandler() {
+        cancelBtn.setOnMouseClicked(event ->{
+            iSelected.set(true);
+            iSelected.set(false);
+        });
+    }
+
+    public BooleanProperty cancelBtnIsSelected() {
+        return iSelected;
+    }
+
 }
