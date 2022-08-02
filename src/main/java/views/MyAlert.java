@@ -1,16 +1,15 @@
 package views;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.Alert;
-import model.AlertStatus;
 
 public class MyAlert {
     private final Alert alert;
-    private final StringProperty status;
+    private final BooleanProperty status;
 
     public MyAlert(Alert.AlertType type, String contentTxt) {
-        status = new SimpleStringProperty("");
+        status = new SimpleBooleanProperty(false);
         alert = new Alert(type);
         alert.setContentText(contentTxt);
         alert.setHeaderText(null);
@@ -22,11 +21,14 @@ public class MyAlert {
         alert.showAndWait();
     }
 
-    public StringProperty alertStatus() {
+    public BooleanProperty alertStatus() {
         return status;
     }
 
     private void alertListener() {
-        alert.setOnHiding(dialogEvent -> status.set(AlertStatus.CLOSED.toString()));
+        alert.setOnHiding(dialogEvent -> {
+            status.set(true);
+            status.set(false);
+        });
     }
 }
