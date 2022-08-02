@@ -50,6 +50,12 @@
 .red-btn{
     -fx-background-color: red;
 }
+.red-border{
+    -fx-border-color: red;
+}
+.green-border{
+    -fx-border-color: rgb(0, 201, 87);
+}
 
 .grey-btn{
     -fx-background-color: grey;
