@@ -5,30 +5,29 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.Alert;
 
 public class MyAlert {
-    private final Alert alert;
-    private final BooleanProperty status;
+    Alert alert;
+    BooleanProperty isShowing;
 
-    public MyAlert(Alert.AlertType type, String contentTxt) {
-        status = new SimpleBooleanProperty(false);
-        alert = new Alert(type);
-        alert.setContentText(contentTxt);
+    public MyAlert() {
+        isShowing = new SimpleBooleanProperty(false);
+        alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText(null);
         alert.getButtonTypes().remove(1);
         alertListener();
     }
 
-    public void showAlert() {
-        alert.showAndWait();
+    public Alert getAlert() {
+       return alert;
     }
 
-    public BooleanProperty alertStatus() {
-        return status;
+    public BooleanProperty isAlertShowing() {
+        return isShowing;
     }
 
     private void alertListener() {
         alert.setOnHiding(dialogEvent -> {
-            status.set(true);
-            status.set(false);
+            isShowing.set(true);
+            isShowing.set(false);
         });
     }
 }

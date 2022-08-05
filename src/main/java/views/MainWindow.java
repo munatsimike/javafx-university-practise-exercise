@@ -11,9 +11,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import model.MenuOption;
-import model.Person;
-import model.PersonType;
+import model.*;
 
 public class MainWindow {
     final static String WELCOME_NOTE = "Welcome ";
@@ -22,14 +20,15 @@ public class MainWindow {
     Stage stage;
     MenuBuilder menuBuilder;
     Database database;
-    Label label;
+    Label headingLabel;
     TableViewBuilder tableViewBuilder;
     VBox vBox;
-    TableView<Person> students;
-    TableView<Person> teachers;
+    TableView<AcademicPerson> students;
+    TableView<AcademicPerson> teachers;
     Pane tableViewPane;
     FormMenuOptions formMenuOptions;
-    FormFields formFields;
+    StudentTeacherForm studentTeacherForm;
+    MyAlert myAlert;
 
     public MainWindow(LoginScreen screen, String loggedInUser) {
         this.screen = screen;
@@ -37,14 +36,16 @@ public class MainWindow {
         tableViewBuilder = new TableViewBuilder();
         menuBuilder = new MenuBuilder();
         database = new Database();
-        label = new Label();
+        headingLabel = new Label();
         formMenuOptions = new FormMenuOptions();
-        formFields = new FormFields(database);
+        myAlert = new MyAlert();
+        studentTeacherForm = new StudentTeacherForm(database, myAlert);
         pane();
         vBox();
         menuSelectedBtn();
         formMenuOptionChangeListener();
         cancelBtnChangeListener();
+        alertStatusEventHandler();
     }
 
     private void pane() {
@@ -67,20 +68,49 @@ public class MainWindow {
         });
     }
 
+    // listen to delete, edit and add button clicks
     private void formMenuOptionChangeListener() {
         formMenuOptions.getSelectedFormBtn().addListener((observable, oldValue, newValue) -> {
-            if (newValue.equals("Add Students")) {
-                label.setText(newValue);
-                clearPane();
-                label.setText(newValue);
-                tableViewPane.getChildren().add(formFields.formFields());
+            if (newValue.equals(ButtonText.ADD_STUDENTS.toString()) || newValue.equals(ButtonText.EDIT_STUDENTS.toString())) {
+                if (newValue.equals(ButtonText.EDIT_STUDENTS.toString())) {
+                    if (tableViewBuilder.isRowSelected()) {
+                        // set heading to edit students
+                        headingLabel.setText(newValue);
+                        clearPane();
+                        // fill form with selected row
+                        studentTeacherForm.fillForm(tableViewBuilder.getSelectedIPerson());
+                        // set button text to edit or add
+                        studentTeacherForm.setAddEditBtnTxt(newValue.substring(0, newValue.length() - 1));
+                        // get form
+                        tableViewPane.getChildren().add(studentTeacherForm.getAddEditTeacherStudentForm());
+                        // hide formOptions edit delete and add buttons
+                        formMenuOptions.isVisible(false);
+                        // clear table selection
+                        tableViewBuilder.clearTableSelection();
+
+                    } else {
+                        formMenuOptions.resetToggle();
+                        System.out.println(formMenuOptions.editButton.isSelected());
+                    }
+                } else {
+                    // clear parent panel
+                    clearPane();
+                    // set heading: add students
+                    headingLabel.setText(newValue);
+                    // hide formOptions edit delete and add buttons
+                    formMenuOptions.isVisible(false);
+                    // set button text to edit or add
+                    studentTeacherForm.setAddEditBtnTxt(newValue.substring(0, newValue.length() - 1));
+                    // get form
+                    tableViewPane.getChildren().add(studentTeacherForm.getAddEditTeacherStudentForm());
+                }
             }
         });
     }
 
     public Stage getMainScreen() {
         setHeaderLabelTxt(WELCOME_NOTE + loggedInUser);
-        vBox.getChildren().addAll(label, tableViewPane, formMenuOptions.getFromOptions());
+        vBox.getChildren().addAll(headingLabel, tableViewPane, formMenuOptions.getFromOptions());
         Window window = new Window(new HBox(menuBuilder.getMenu(), vBox));
         stage = window.getWindow();
         stage.setHeight(600);
@@ -90,7 +120,7 @@ public class MainWindow {
         return stage;
     }
 
-    private TableView<Person> tableView(PersonType person) {
+    private TableView<AcademicPerson> tableView(PersonType person) {
 
         if (person == PersonType.STUDENT) {
             students = tableViewBuilder.getTable(person);
@@ -133,16 +163,29 @@ public class MainWindow {
     }
 
     private void setHeaderLabelTxt(String txt) {
-        label.setText(txt);
-        label.setFont(Font.font("Arial", FontPosture.REGULAR, 30));
-        label.setPadding(new Insets(0, 0, 25, 0));
+        headingLabel.setText(txt);
+        headingLabel.setFont(Font.font("Arial", FontPosture.REGULAR, 30));
+        headingLabel.setPadding(new Insets(0, 0, 25, 0));
     }
 
     // listen to form cancel button clicks
     private void cancelBtnChangeListener() {
-        formFields.cancelBtnIsSelected().addListener((observableValue, aBoolean, t1) -> {
-            if (t1 && label.textProperty().get().equals("Add Students")) {
-                showContent(MenuOption.STUDENTS);
+        studentTeacherForm.cancelBtnIsSelected().addListener((observableValue, aBoolean, t1) -> {
+            showContent(MenuOption.STUDENTS);
+        });
+    }
+
+    // listen to alert showing or closing events
+    private void alertStatusEventHandler() {
+        myAlert.isAlertShowing().addListener((observableValue, s, t1) -> {
+            // check if alert is closed
+            if (t1) {
+                // clear form after alert ok button has been clicked
+                studentTeacherForm.clearForm();
+                if (headingLabel.textProperty().get().equals(ButtonText.EDIT_STUDENTS.toString())) {
+                    // show students list
+                    showContent(MenuOption.STUDENTS);
+                }
             }
         });
     }

@@ -16,7 +16,7 @@
 
 .separator .line {
     -fx-border-style: solid;
-    -fx-border-color: #602424;
+    -fx-border-color: #8c3ba4;
     -fx-border-width: 7px;
 }
 
@@ -60,7 +60,7 @@
 .grey-btn{
     -fx-background-color: grey;
 }
-
+/**
 .table-view .column-header {
     -fx-border-width: 0 2 2 0;
     -fx-border-color: black, transparent;
@@ -69,7 +69,7 @@
 
 .table-row-cell {
     -fx-border-color: grey;
-    -fx-background-color: white;
+   -fx-background-color: white;
     -fx-border-width: 0 0 1 0;
 }
 

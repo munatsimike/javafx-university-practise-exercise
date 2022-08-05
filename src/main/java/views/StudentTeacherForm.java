@@ -7,22 +7,22 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import model.Student;
-import model.StudentGroup;
+import model.*;
 
-import java.sql.Date;
 import java.util.List;
 
-public class FormFields {
+public class StudentTeacherForm {
     TextField username;
     PasswordField passwordField;
     TextField firstNameTxtField;
     TextField lastNameTxtField;
-    ToggleButton addStudentBtn;
+    ToggleButton addEditBtn;
+    FormMenuOptions formMenuOptions;
     ToggleButton cancelBtn;
     DatePicker birthdayDatePicker;
     ComboBox<String> studentGroupChoiceBox;
     GridPane gridPane;
+    AcademicPerson oldPerson;
     HBox hBox;
     VBox vBox;
     Database database;
@@ -31,9 +31,11 @@ public class FormFields {
     MyAlert myAlert;
     Label errorLabel;
 
-    public FormFields(Database database) {
+    public StudentTeacherForm(Database database, MyAlert myAlert) {
         this.database = database;
-
+        this.myAlert = myAlert;
+        assert false;
+        formMenuOptions = new FormMenuOptions();
         iSelected = new SimpleBooleanProperty(false);
         username = new TextField();
         passwordField = new PasswordField();
@@ -64,7 +66,7 @@ public class FormFields {
 
     private void toggleGroup() {
         ToggleGroup toggleGroup = new ToggleGroup();
-        addStudentBtn.setToggleGroup(toggleGroup);
+        addEditBtn.setToggleGroup(toggleGroup);
         cancelBtn.setToggleGroup(toggleGroup);
     }
 
@@ -84,20 +86,24 @@ public class FormFields {
     }
 
     private void cancelBtn() {
-        cancelBtn = new ToggleButton("Cancel");
+        cancelBtn = new ToggleButton(ButtonText.Cancel.toString());
         cancelBtn.getStyleClass().add("grey-btn");
         cancelBtn.setMinWidth(100);
     }
 
     private void addStudentBtn() {
-        addStudentBtn = new ToggleButton("Add student");
-        addStudentBtn.getStyleClass().add("blue-btn");
-        addStudentBtn.setMinWidth(100);
+        addEditBtn = new ToggleButton();
+        addEditBtn.getStyleClass().add("blue-btn");
+        addEditBtn.setMinWidth(100);
+    }
+
+    public void setAddEditBtnTxt(String txt) {
+        addEditBtn.setText(txt);
     }
 
     private void hBox() {
         hBox = new HBox(22);
-        hBox.getChildren().addAll(addStudentBtn, cancelBtn);
+        hBox.getChildren().addAll(addEditBtn, cancelBtn);
     }
 
     private void gridPane() {
@@ -113,14 +119,34 @@ public class FormFields {
         gridPane.add(birthdayDatePicker, 1, 1);
     }
 
-    public VBox formFields() {
-        clearForm();
+    public VBox getAddEditTeacherStudentForm() {
+        if (addEditBtn.textProperty().get().equals("Add Student")) {
+            clearForm();
+        }
         return vBox;
     }
 
-    // listen to add button clicks
+    // fill form with person details
+    public void fillForm(AcademicPerson person) {
+        oldPerson = person;
+        username.setText(person.getUserName());
+        passwordField.setText(person.getPassword());
+        firstNameTxtField.setText(person.getFirstName());
+        lastNameTxtField.setText(person.getLastName());
+        birthdayDatePicker.setValue(person.getBirth_date());
+
+        if (person instanceof Student) {
+            Student student = (Student) person;
+            studentGroupChoiceBox.setValue(student.getGroup());
+        } else {
+            Teacher teacher = (Teacher) person;
+        }
+    }
+
+    // listen to add edit, button clicks
     private void addStudentBtnHandler() {
-        addStudentBtn.setOnMouseClicked(event -> {
+        addEditBtn.setOnMouseClicked(event -> {
+            Alert alert = myAlert.getAlert();
             if (errorLabel.isVisible() || !isFieldBlank()) {
                 errorLabel.setText("All fields are mandatory");
                 if (!errorLabel.isVisible())
@@ -128,9 +154,25 @@ public class FormFields {
                 return;
             }
 
-            Student student = new Student(database.getId(), username.getText(), passwordField.getText(), firstNameTxtField.getText(), lastNameTxtField.getText(), Date.valueOf(birthdayDatePicker.getValue()), studentGroupChoiceBox.getValue());
+            Student student = new Student(database.getId(), username.getText(), passwordField.getText(), firstNameTxtField.getText(), lastNameTxtField.getText(), birthdayDatePicker.getValue(), studentGroupChoiceBox.getValue());
+            // edit person
+            if (oldPerson != null) {
+                student.setId(oldPerson.getId());
+                // check if person is the same
+                if (!oldPerson.isSamePerson(oldPerson, student)) {
+                    database.editPerson(student);
+                    oldPerson = null;
+                    alert.setContentText("Student successfully edited");
+                    alert.showAndWait();
+
+                }
+                return;
+            }
+
+            // add person
             database.addPerson(student);
-            confirmationAlert();
+            alert.setContentText("Student successfully saved");
+            alert.showAndWait();
         });
     }
 
@@ -143,7 +185,6 @@ public class FormFields {
                 break;
             }
         }
-
         return isValid;
     }
 
@@ -189,29 +230,13 @@ public class FormFields {
         }
     }
 
-    // create confirmation alert
-    private void confirmationAlert() {
-        myAlert = new MyAlert(Alert.AlertType.CONFIRMATION, "Student successfully saved");
-        alertStatus();
-        myAlert.showAlert();
-    }
-
     // set error label visibility
     private void errorLabelVisibility() {
         errorLabel.setVisible(!errorLabel.isVisible());
     }
 
-    // confirmation alert listener
-    private void alertStatus() {
-        myAlert.alertStatus().addListener((observableValue, s, t1) -> {
-            if (t1) {
-                clearForm();
-            }
-        });
-    }
-
     // clear form fields
-    private void clearForm() {
+    public void clearForm() {
         // reset text fields
         for (TextField field : textFields) {
             if (field.getText().length() > 0) {
@@ -222,8 +247,8 @@ public class FormFields {
         }
 
         //reset date picker
-        if (studentGroupChoiceBox.getValue() != null)
-            studentGroupChoiceBox.setValue(null);
+        if (birthdayDatePicker.getValue() != null)
+            birthdayDatePicker.setValue(null);
 
         //clear error label
         if (errorLabel.isVisible()) {
@@ -233,7 +258,6 @@ public class FormFields {
 
         //reset date picker
         resetComboboxToPromptText(studentGroupChoiceBox);
-
     }
 
     private void resetComboboxToPromptText(ComboBox<String> comboBox) {
@@ -252,4 +276,6 @@ public class FormFields {
             });
         }
     }
+
+
 }

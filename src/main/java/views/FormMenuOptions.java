@@ -5,6 +5,7 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
+import model.ButtonText;
 import model.MenuOption;
 
 import java.util.List;
@@ -17,15 +18,15 @@ public class FormMenuOptions {
     ToggleGroup toggleGroup;
     List<ToggleButton> toggleButtons;
     StringProperty selectedFormBtn;
-    HBox hBox;
+    HBox editDeleteAddBtnHbox;
 
     public FormMenuOptions() {
-        addButton = new ToggleButton("Add ");
-        editButton = new ToggleButton("Edit ");
-        deleteButton = new ToggleButton("Delete ");
+        addButton = new ToggleButton();
+        editButton = new ToggleButton();
+        deleteButton = new ToggleButton();
         selectedFormBtn = new SimpleStringProperty("");
         toggleButtons = List.of(addButton, editButton, deleteButton);
-        hBox();
+        setEditDeleteAddBtnhbox();
         toggleGroup();
         setBtnBackgroundColor();
         btnHandler();
@@ -45,51 +46,61 @@ public class FormMenuOptions {
         }
     }
 
-    private void hBox() {
-        hBox = new HBox();
-        hBox.setSpacing(25);
-        hBox.getChildren().addAll(addButton, editButton, deleteButton);
+    // add delete, edit and add button to hBox
+    private void setEditDeleteAddBtnhbox() {
+        editDeleteAddBtnHbox = new HBox();
+        editDeleteAddBtnHbox.setSpacing(25);
+        editDeleteAddBtnHbox.getChildren().addAll(addButton, editButton, deleteButton);
         isVisible(false);
     }
 
     public HBox getFromOptions() {
-        return hBox;
+        return editDeleteAddBtnHbox;
     }
 
+    // set add , delete and edit button text
     public void setBtnTex(MenuOption selectedBtn) {
-        if (selectedBtn.equals(MenuOption.TEACHERS)) {
-            for (ToggleButton toggleButton : toggleButtons)
-                toggleButton.setText(toggleButton.getText().replaceAll("\\s.*", " " + MenuOption.TEACHERS));
-
-        } else if (selectedBtn.equals(MenuOption.STUDENTS)) {
-            for (ToggleButton toggleButton : toggleButtons)
-                toggleButton.setText(toggleButton.getText().replaceAll("\\s.*", " " + MenuOption.STUDENTS));
-
+        if (selectedBtn.equals(MenuOption.STUDENTS)) {
+            addButton.setText(ButtonText.ADD_STUDENTS.toString());
+            editButton.setText(ButtonText.EDIT_STUDENTS.toString());
+            deleteButton.setText(ButtonText.DELETE_STUDENTS.toString());
+        } else if (selectedBtn.equals(MenuOption.TEACHERS)) {
+            addButton.setText(ButtonText.ADD_TEACHERS.toString());
+            editButton.setText(ButtonText.EDIT_TEACHERS.toString());
+            deleteButton.setText(ButtonText.DELETE_TEACHERS.toString());
         } else {
             isVisible(false);
         }
     }
 
+    // delete add and edit button click handler
     private void btnHandler() {
         for (ToggleButton toggleButton : toggleButtons) {
             toggleButton.setOnMouseClicked(mouseEvent -> {
-                selectedFormBtn.set(toggleButton.textProperty().get());
-                selectedFormBtn.set("");
-                if (toggleButton.textProperty().get().equals("Add Students"))
-                    isVisible(false);
+                String btnText = toggleButton.textProperty().get();
+                selectedFormBtn.set(btnText);
             });
         }
     }
 
+    // return selected button: delete add and edit
     public StringProperty getSelectedFormBtn() {
         return selectedFormBtn;
     }
 
+    // show or hide add, edit and delete buttons
     public void isVisible(Boolean visibility) {
-        if (visibility && !hBox.isVisible()) {
-            hBox.setVisible(true);
-        } else if (!visibility && hBox.isVisible()) {
-            hBox.setVisible(false);
+        if (visibility && !editDeleteAddBtnHbox.isVisible()) {
+            editDeleteAddBtnHbox.setVisible(true);
+            selectedFormBtn.set("");
+        } else if (!visibility && editDeleteAddBtnHbox.isVisible()) {
+            editDeleteAddBtnHbox.setVisible(false);
         }
+    }
+
+    public void resetToggle() {
+
+        toggleGroup.getSelectedToggle().setSelected(false);
+
     }
 }

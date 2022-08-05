@@ -1,6 +1,6 @@
 package model;
 
-public class Person {
+public abstract class Person {
     int id;
     String userName;
     String password;
@@ -25,6 +25,26 @@ public class Person {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Person(int id, String userName, String password, String firstName, String lastName) {
