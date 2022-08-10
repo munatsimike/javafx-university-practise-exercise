@@ -37,7 +37,7 @@ public class MenuBuilder {
 
     public VBox getMenu() {
         vBox.setPrefWidth(175);
-        vBox.getStyleClass().add("bleu-background");
+        vBox.getStyleClass().add("sky-blue-background");
         vBox.setAlignment(Pos.BASELINE_CENTER);
         vBox.getChildren().addAll(logoTitle(), dashboard, students, teachers);
         return vBox;

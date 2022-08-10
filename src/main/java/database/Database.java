@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import model.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.stream.Collectors;
 
 public class Database {
@@ -64,5 +63,9 @@ public class Database {
                 }
             }
         }
+    }
+
+    public void deletePerson(int id) {
+        persons.removeIf(person -> person.getId() == id);
     }
 }

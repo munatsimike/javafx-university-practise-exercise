@@ -70,7 +70,7 @@ public class MainWindow {
 
     // listen to delete, edit and add button clicks
     private void formMenuOptionChangeListener() {
-        formMenuOptions.getSelectedFormBtn().addListener((observable, oldValue, newValue) -> {
+        formMenuOptions.getPressedBtn().addListener((observable, oldValue, newValue) -> {
             if (newValue.equals(ButtonText.ADD_STUDENTS.toString()) || newValue.equals(ButtonText.EDIT_STUDENTS.toString())) {
                 if (newValue.equals(ButtonText.EDIT_STUDENTS.toString())) {
                     if (tableViewBuilder.isRowSelected()) {
@@ -88,9 +88,6 @@ public class MainWindow {
                         // clear table selection
                         tableViewBuilder.clearTableSelection();
 
-                    } else {
-                        formMenuOptions.resetToggle();
-                        System.out.println(formMenuOptions.editButton.isSelected());
                     }
                 } else {
                     // clear parent panel
@@ -104,8 +101,19 @@ public class MainWindow {
                     // get form
                     tableViewPane.getChildren().add(studentTeacherForm.getAddEditTeacherStudentForm());
                 }
+            } else if (newValue.equals(ButtonText.DELETE_STUDENTS.toString()) || newValue.equals(ButtonText.DELETE_TEACHERS.toString())) {
+                AcademicPerson person = tableViewBuilder.getSelectedIPerson();
+                // delete person
+                myAlert.confirmationAlert("Are you sure you want to delete: " + person.getFirstName() + " " + person.getLastName()).showAndWait();
+                database.deletePerson(person.getId());
+                if (person instanceof Student) {
+                    tableView(PersonType.STUDENT);
+                } else {
+                    tableView(PersonType.TEACHER);
+                }
             }
         });
+
     }
 
     public Stage getMainScreen() {

@@ -47,7 +47,7 @@ public class LoginScreen {
 
     private Button loginBtn() {
         loginBtn = new Button("Login");
-        loginBtn.getStyleClass().add("btn");
+        loginBtn.getStyleClass().add("login-btn");
         loginBtnEventHandler();
         return loginBtn;
     }
@@ -76,7 +76,7 @@ public class LoginScreen {
         Label label = new Label("University Project");
         label.getStyleClass().add("heading");
         hBox.getChildren().addAll(logo(), label);
-        hBox.getStyleClass().add("bleu-background");
+        hBox.getStyleClass().add("sky-blue-background");
         hBox.setAlignment(Pos.CENTER);
         return hBox;
     }

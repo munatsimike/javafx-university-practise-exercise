@@ -2,48 +2,35 @@ package views;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import model.ButtonText;
 import model.MenuOption;
 
-import java.util.List;
+public class FormMenuOptions implements EventHandler<ActionEvent> {
 
-public class FormMenuOptions {
-
-    ToggleButton addButton;
-    ToggleButton editButton;
-    ToggleButton deleteButton;
-    ToggleGroup toggleGroup;
-    List<ToggleButton> toggleButtons;
-    StringProperty selectedFormBtn;
+    Button addButton;
+    Button editButton;
+    Button deleteButton;
+    StringProperty pressBtnIndicator;
     HBox editDeleteAddBtnHbox;
 
     public FormMenuOptions() {
-        addButton = new ToggleButton();
-        editButton = new ToggleButton();
-        deleteButton = new ToggleButton();
-        selectedFormBtn = new SimpleStringProperty("");
-        toggleButtons = List.of(addButton, editButton, deleteButton);
+        addButton = new Button();
+        editButton = new Button();
+        deleteButton = new Button();
+        pressBtnIndicator = new SimpleStringProperty("");
         setEditDeleteAddBtnhbox();
-        toggleGroup();
         setBtnBackgroundColor();
-        btnHandler();
+        formOptionsBtnHandler();
     }
 
     private void setBtnBackgroundColor() {
-        editButton.getStyleClass().add("grey-btn");
-        addButton.getStyleClass().add("blue-btn");
-        deleteButton.getStyleClass().add("red-btn");
-    }
-
-    private void toggleGroup() {
-        toggleGroup = new ToggleGroup();
-        for (ToggleButton toggle : toggleButtons) {
-            toggle.setToggleGroup(toggleGroup);
-            toggle.setUserData(toggle);
-        }
+        editButton.getStyleClass().add("edit-btn");
+        addButton.getStyleClass().add("add-btn");
+        deleteButton.getStyleClass().add("delete-btn");
     }
 
     // add delete, edit and add button to hBox
@@ -52,6 +39,17 @@ public class FormMenuOptions {
         editDeleteAddBtnHbox.setSpacing(25);
         editDeleteAddBtnHbox.getChildren().addAll(addButton, editButton, deleteButton);
         isVisible(false);
+    }
+
+    private void clearPressedBtnIndicator() {
+        pressBtnIndicator.set("");
+    }
+
+    // delete add and edit button click handler
+    private void formOptionsBtnHandler() {
+        editButton.setOnAction(this);
+        deleteButton.setOnAction(this);
+        addButton.setOnAction(this);
     }
 
     public HBox getFromOptions() {
@@ -73,34 +71,26 @@ public class FormMenuOptions {
         }
     }
 
-    // delete add and edit button click handler
-    private void btnHandler() {
-        for (ToggleButton toggleButton : toggleButtons) {
-            toggleButton.setOnMouseClicked(mouseEvent -> {
-                String btnText = toggleButton.textProperty().get();
-                selectedFormBtn.set(btnText);
-            });
-        }
-    }
-
     // return selected button: delete add and edit
-    public StringProperty getSelectedFormBtn() {
-        return selectedFormBtn;
+    public StringProperty getPressedBtn() {
+        return pressBtnIndicator;
     }
 
     // show or hide add, edit and delete buttons
     public void isVisible(Boolean visibility) {
         if (visibility && !editDeleteAddBtnHbox.isVisible()) {
             editDeleteAddBtnHbox.setVisible(true);
-            selectedFormBtn.set("");
+            clearPressedBtnIndicator();
         } else if (!visibility && editDeleteAddBtnHbox.isVisible()) {
             editDeleteAddBtnHbox.setVisible(false);
         }
     }
 
-    public void resetToggle() {
-
-        toggleGroup.getSelectedToggle().setSelected(false);
-
+    @Override
+    public void handle(ActionEvent actionEvent) {
+        Button button = (Button) actionEvent.getSource();
+        if (button.getText().equals(pressBtnIndicator.getValue()))
+            clearPressedBtnIndicator();
+        pressBtnIndicator.set(button.getText());
     }
 }

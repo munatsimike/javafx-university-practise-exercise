@@ -87,13 +87,13 @@ public class StudentTeacherForm {
 
     private void cancelBtn() {
         cancelBtn = new ToggleButton(ButtonText.Cancel.toString());
-        cancelBtn.getStyleClass().add("grey-btn");
+        cancelBtn.getStyleClass().add("cancel-btn");
         cancelBtn.setMinWidth(100);
     }
 
     private void addStudentBtn() {
         addEditBtn = new ToggleButton();
-        addEditBtn.getStyleClass().add("blue-btn");
+        addEditBtn.getStyleClass().add("add-btn");
         addEditBtn.setMinWidth(100);
     }
 
@@ -146,7 +146,7 @@ public class StudentTeacherForm {
     // listen to add edit, button clicks
     private void addStudentBtnHandler() {
         addEditBtn.setOnMouseClicked(event -> {
-            Alert alert = myAlert.getAlert();
+            Alert alert = myAlert.notificationAlert();
             if (errorLabel.isVisible() || !isFieldBlank()) {
                 errorLabel.setText("All fields are mandatory");
                 if (!errorLabel.isVisible())
@@ -163,7 +163,7 @@ public class StudentTeacherForm {
                     database.editPerson(student);
                     oldPerson = null;
                     alert.setContentText("Student successfully edited");
-                    alert.showAndWait();
+                    alert.show();
 
                 }
                 return;
@@ -172,7 +172,7 @@ public class StudentTeacherForm {
             // add person
             database.addPerson(student);
             alert.setContentText("Student successfully saved");
-            alert.showAndWait();
+            alert.show();
         });
     }
 
@@ -276,6 +276,4 @@ public class StudentTeacherForm {
             });
         }
     }
-
-
 }
