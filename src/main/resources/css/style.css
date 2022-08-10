@@ -7,7 +7,11 @@
     -fx-text-fill: red;
 }
 
-.sky-blue-background, .login-btn {
+.blue-background, .separator .line, .toggle-button{
+    -fx-background-color: black;
+}
+
+.sky-blue-background, .login-btn, .add-btn {
     -fx-background-color: #0e6eb0;
 }
 
@@ -17,7 +21,6 @@
 
 .separator .line {
     -fx-border-style: solid;
-    -fx-border-color: #8c3ba4;
     -fx-border-width: 7px;
 }
 
@@ -38,10 +41,6 @@
     -fx-border-width: 0px;
 }
 
-.blue-background, .add-btn {
-    -fx-background-color: blue;
-}
-
 .button:pressed:hover {
     -fx-scale-y: 0.9;
     -fx-scale-x: 0.9;
@@ -59,12 +58,8 @@
     -fx-border-color: rgb(0, 201, 87);
 }
 
-.grey-background, .cancel-btn, .edit-btn {
+.grey-background, .cancel-btn, .edit-btn, .toggle-button:selected {
     -fx-background-color: grey;
-}
-
-.toggle-button:selected{
-    -fx-background-color: #aba7a7;
 }
 
 .table-view {
@@ -87,7 +82,6 @@
 }
 
 .toggle-button {
-
 }
 
 .login-btn {

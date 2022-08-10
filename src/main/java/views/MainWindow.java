@@ -1,6 +1,9 @@
 package views;
 
 import database.Database;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
@@ -31,6 +34,7 @@ public class MainWindow {
     FormMenuOptions formMenuOptions;
     StudentTeacherForm studentTeacherForm;
     MyAlert myAlert;
+    MySearchForm mySearchForm;
 
     public MainWindow(LoginScreen screen, String loggedInUser) {
         this.screen = screen;
@@ -42,6 +46,7 @@ public class MainWindow {
         formMenuOptions = new FormMenuOptions();
         myAlert = new MyAlert();
         studentTeacherForm = new StudentTeacherForm(database);
+        mySearchForm = new MySearchForm();
         pane();
         vBox();
         menuSelectedBtn();
@@ -122,10 +127,10 @@ public class MainWindow {
 
     public Stage getMainScreen() {
         setHeaderLabelTxt(WELCOME_NOTE + loggedInUser);
-        vBox.getChildren().addAll(headingLabel, tableViewPane, formMenuOptions.getFromOptions());
+        vBox.getChildren().addAll(headingLabel, mySearchForm.getSearchFrom(), tableViewPane, formMenuOptions.getFromOptions());
         Window window = new Window(new HBox(menuBuilder.getMenu(), vBox));
         stage = window.getWindow();
-        stage.setHeight(600);
+        stage.setHeight(650);
         stage.setWidth(1024);
         stage.initStyle(StageStyle.UNDECORATED);
         showLoginScreen();
@@ -154,14 +159,17 @@ public class MainWindow {
     private void showContent(MenuOption option) {
         if (option == MenuOption.DASHBOARD) {
             setHeaderLabelTxt(WELCOME_NOTE + loggedInUser);
+            mySearchForm.setFromVisibility(false);
             clearPane();
         } else if (option == MenuOption.STUDENTS) {
             setHeaderLabelTxt(MenuOption.STUDENTS.toString());
+            mySearchForm.setFromVisibility(true);
             clearPane();
             // add a child
             tableViewPane.getChildren().add(tableView(PersonType.STUDENT));
         } else {
             setHeaderLabelTxt(MenuOption.TEACHERS.toString());
+            mySearchForm.setFromVisibility(true);
             clearPane();
             // add a child
             tableViewPane.getChildren().add(tableView(PersonType.TEACHER));
