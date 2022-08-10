@@ -54,8 +54,7 @@ public class LoginScreen {
 
     private Button cancelBtn() {
         cancelBtn = new Button("Cancel");
-        cancelBtn.setStyle("-fx-background-color: #aba7a7");
-        cancelBtn.setMaxWidth(130);
+        cancelBtn.getStyleClass().add("cancel-btn");
         cancelBtnEventHandler();
         return cancelBtn;
     }

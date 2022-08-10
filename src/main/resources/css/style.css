@@ -1,11 +1,10 @@
 
-.white-text-fill, .login-btn, .heading, .toggle-button, .menu-logo, .table-view, .delete-btn, .add-btn, .edit-btn {
+.white-text-fill, .login-btn, .heading, .toggle-button, .menu-logo, .table-view, .delete-btn, .add-btn, .edit-btn, .cancel-btn {
     -fx-text-fill: white;
 }
 
-.login-btn {
-    -fx-font-size: 12;
-    -fx-max-width: 130;
+.red-text-fill, .error-label-text-color{
+    -fx-text-fill: red;
 }
 
 .sky-blue-background, .login-btn {
@@ -26,16 +25,13 @@
     -fx-max-width: 200;
 }
 
-.toggle-button, .delete-btn, .add-btn, .edit-btn {
+.btn-settings, .toggle-button, .delete-btn, .add-btn, .edit-btn, .cancel-btn, .login-btn {
     -fx-min-width: 120;
     -fx-font-size: 14;
 }
 
 .menu-logo {
     -fx-font-size: 17;
-}
-
-.table-view {
 }
 
 .table-cell {
@@ -46,17 +42,9 @@
     -fx-background-color: blue;
 }
 
-.delete-btn {
-
-}
-
-.edit-btn {
-}
-
-.cancel-btn {
-}
-
-.add-btn {
+.button:pressed:hover {
+    -fx-scale-y: 0.9;
+    -fx-scale-x: 0.9;
 }
 
 .red-background, .delete-btn {
@@ -71,9 +59,40 @@
     -fx-border-color: rgb(0, 201, 87);
 }
 
-.grey-background, .cancel-btn, .edit-btn{
+.grey-background, .cancel-btn, .edit-btn {
     -fx-background-color: grey;
 }
+
+.toggle-button:selected{
+    -fx-background-color: #aba7a7;
+}
+
+.table-view {
+}
+
+.delete-btn {
+
+}
+
+.error-label-text-color{}
+
+
+.edit-btn {
+}
+
+.cancel-btn {
+}
+
+.add-btn {
+}
+
+.toggle-button {
+
+}
+
+.login-btn {
+}
+
 
 /**
 .table-view .column-header {

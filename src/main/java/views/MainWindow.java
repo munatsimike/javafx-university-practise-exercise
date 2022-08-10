@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.*;
 
+import java.util.Objects;
+
 public class MainWindow {
     final static String WELCOME_NOTE = "Welcome ";
     LoginScreen screen;
@@ -39,7 +41,7 @@ public class MainWindow {
         headingLabel = new Label();
         formMenuOptions = new FormMenuOptions();
         myAlert = new MyAlert();
-        studentTeacherForm = new StudentTeacherForm(database, myAlert);
+        studentTeacherForm = new StudentTeacherForm(database);
         pane();
         vBox();
         menuSelectedBtn();
@@ -101,11 +103,14 @@ public class MainWindow {
                     // get form
                     tableViewPane.getChildren().add(studentTeacherForm.getAddEditTeacherStudentForm());
                 }
-            } else if (newValue.equals(ButtonText.DELETE_STUDENTS.toString()) || newValue.equals(ButtonText.DELETE_TEACHERS.toString())) {
+            } else if ((newValue.equals(ButtonText.DELETE_STUDENTS.toString()) || newValue.equals(ButtonText.DELETE_TEACHERS.toString())) && tableViewBuilder.isRowSelected()) {
                 AcademicPerson person = tableViewBuilder.getSelectedIPerson();
                 // delete person
-                myAlert.confirmationAlert("Are you sure you want to delete: " + person.getFirstName() + " " + person.getLastName()).showAndWait();
-                database.deletePerson(person.getId());
+                myAlert.confirmationAlert("Are you sure you want to delete: " + person.getFirstName() + " " + person.getLastName())
+                        .showAndWait()
+                        .filter(response -> Objects.equals(response.getText(), "Delete"))
+                        .ifPresent(response -> database.deletePerson(person.getId()));
+
                 if (person instanceof Student) {
                     tableView(PersonType.STUDENT);
                 } else {
@@ -113,7 +118,6 @@ public class MainWindow {
                 }
             }
         });
-
     }
 
     public Stage getMainScreen() {

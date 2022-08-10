@@ -16,9 +16,9 @@ public class StudentTeacherForm {
     PasswordField passwordField;
     TextField firstNameTxtField;
     TextField lastNameTxtField;
-    ToggleButton addEditBtn;
+    Button addEditBtn;
     FormMenuOptions formMenuOptions;
-    ToggleButton cancelBtn;
+    Button cancelBtn;
     DatePicker birthdayDatePicker;
     ComboBox<String> studentGroupChoiceBox;
     GridPane gridPane;
@@ -26,17 +26,17 @@ public class StudentTeacherForm {
     HBox hBox;
     VBox vBox;
     Database database;
-    BooleanProperty iSelected;
+    BooleanProperty returnToMainScreen;
     List<TextField> textFields;
-    MyAlert myAlert;
+    Alert alert;
     Label errorLabel;
 
-    public StudentTeacherForm(Database database, MyAlert myAlert) {
+    public StudentTeacherForm(Database database) {
         this.database = database;
-        this.myAlert = myAlert;
+        alert = new MyAlert().notificationAlert();
         assert false;
         formMenuOptions = new FormMenuOptions();
-        iSelected = new SimpleBooleanProperty(false);
+        returnToMainScreen = new SimpleBooleanProperty(false);
         username = new TextField();
         passwordField = new PasswordField();
         firstNameTxtField = new TextField();
@@ -49,7 +49,6 @@ public class StudentTeacherForm {
         hBox();
         errorLabel();
         gridPane();
-        toggleGroup();
         addStudentBtnHandler();
         cancelBtnHandler();
         vBox = new VBox(50);
@@ -61,13 +60,7 @@ public class StudentTeacherForm {
     private void errorLabel() {
         errorLabel = new Label("");
         errorLabel.setVisible(false);
-        errorLabel.setStyle("-fx-text-fill: red");
-    }
-
-    private void toggleGroup() {
-        ToggleGroup toggleGroup = new ToggleGroup();
-        addEditBtn.setToggleGroup(toggleGroup);
-        cancelBtn.setToggleGroup(toggleGroup);
+        errorLabel.getStyleClass().add("error-label-text-color");
     }
 
     private void textPrompts() {
@@ -86,13 +79,13 @@ public class StudentTeacherForm {
     }
 
     private void cancelBtn() {
-        cancelBtn = new ToggleButton(ButtonText.Cancel.toString());
+        cancelBtn = new Button(ButtonText.Cancel.toString());
         cancelBtn.getStyleClass().add("cancel-btn");
         cancelBtn.setMinWidth(100);
     }
 
     private void addStudentBtn() {
-        addEditBtn = new ToggleButton();
+        addEditBtn = new Button();
         addEditBtn.getStyleClass().add("add-btn");
         addEditBtn.setMinWidth(100);
     }
@@ -146,7 +139,6 @@ public class StudentTeacherForm {
     // listen to add edit, button clicks
     private void addStudentBtnHandler() {
         addEditBtn.setOnMouseClicked(event -> {
-            Alert alert = myAlert.notificationAlert();
             if (errorLabel.isVisible() || !isFieldBlank()) {
                 errorLabel.setText("All fields are mandatory");
                 if (!errorLabel.isVisible())
@@ -163,8 +155,9 @@ public class StudentTeacherForm {
                     database.editPerson(student);
                     oldPerson = null;
                     alert.setContentText("Student successfully edited");
-                    alert.show();
-
+                    alert.showAndWait();
+                    clearForm();
+                    setReturnToMainScreen();
                 }
                 return;
             }
@@ -173,6 +166,7 @@ public class StudentTeacherForm {
             database.addPerson(student);
             alert.setContentText("Student successfully saved");
             alert.show();
+            clearForm();
         });
     }
 
@@ -191,13 +185,18 @@ public class StudentTeacherForm {
     // listen to cancel button clicks
     private void cancelBtnHandler() {
         cancelBtn.setOnMouseClicked(event -> {
-            iSelected.set(true);
-            iSelected.set(false);
+            setReturnToMainScreen();
         });
     }
 
+    private void setReturnToMainScreen() {
+        returnToMainScreen.set(true);
+        // reset to false
+        returnToMainScreen.set(false);
+    }
+
     public BooleanProperty cancelBtnIsSelected() {
-        return iSelected;
+        return returnToMainScreen;
     }
 
     private void textFieldFocusChangeListener() {
