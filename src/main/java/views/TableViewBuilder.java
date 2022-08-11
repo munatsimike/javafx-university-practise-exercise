@@ -134,7 +134,7 @@ public class TableViewBuilder {
     }
 
     private void searchQuerylistener() {
-        mySearchForm.getTextField().textProperty().addListener((observable, oldValue, newValue) ->
+        mySearchForm.getSearchTextField().textProperty().addListener((observable, oldValue, newValue) ->
                 filteredData.setPredicate(createPredicate(newValue)));
     }
 }

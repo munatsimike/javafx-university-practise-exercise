@@ -7,39 +7,35 @@ import javafx.scene.layout.GridPane;
 
 public class MySearchForm {
     Label label;
-    TextField textField;
-    GridPane gridPane;
+    TextField searchTextField;
+    GridPane textFieldLabelGridPane;
 
     public MySearchForm() {
-        textField = new TextField();
-        textField.setPromptText("Enter name");
+        searchTextField = new TextField();
+        searchTextField.setPromptText("Id, Firstname, Lastname");
         label = new Label("Search");
         initGridPane();
         focusChangeListener();
     }
 
     private void initGridPane() {
-        gridPane = new GridPane();
-        gridPane.setHgap(8);
-        gridPane.addRow(0, label, textField);
+        textFieldLabelGridPane = new GridPane();
+        textFieldLabelGridPane.setHgap(8);
+        textFieldLabelGridPane.addRow(0, label, searchTextField);
     }
 
     public GridPane getSearchFrom() {
-        return gridPane;
+        return textFieldLabelGridPane;
     }
 
-    public TextField getTextField() {
-        return textField;
-    }
-
-    public void setFromVisibility(Boolean visibility) {
-        gridPane.setVisible(visibility);
+    public TextField getSearchTextField() {
+        return searchTextField;
     }
 
     private void focusChangeListener(){
-        textField.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
+        searchTextField.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
             if(!t1){
-                textField.setText("");
+                searchTextField.setText("");
             }
         });
     }
