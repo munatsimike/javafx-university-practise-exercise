@@ -22,7 +22,6 @@ public class MySearchForm {
         gridPane = new GridPane();
         gridPane.setHgap(8);
         gridPane.addRow(0, label, textField);
-        gridPane.setVisible(false);
     }
 
     public GridPane getSearchFrom() {

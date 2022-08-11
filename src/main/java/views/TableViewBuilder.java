@@ -2,29 +2,40 @@ package views;
 
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import model.AcademicPerson;
 import model.Person;
 import model.PersonType;
 
 import java.util.Date;
+import java.util.function.Predicate;
 
 public class TableViewBuilder {
     TableView<AcademicPerson> tableView;
     TableView.TableViewSelectionModel<AcademicPerson> selectionModel;
     ObservableList<AcademicPerson> selectedItems;
+    FilteredList<AcademicPerson> filteredData;
+    MySearchForm mySearchForm;
+    VBox searchTableviewContainer;
 
     public TableViewBuilder() {
         tableView = new TableView<>();
+        mySearchForm = new MySearchForm();
+        searchTableviewContainer = new VBox(20);
+        // add search form to container
+        searchTableviewContainer.getChildren().add(mySearchForm.getSearchFrom());
         tableView.setMinWidth(800);
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         defaultColumns();
         setSelectionMode();
         selectedItems = selectionModel.getSelectedItems();
         selectedItemsChangeListener();
+        searchQuerylistener();
     }
 
     private void setSelectionMode() {
@@ -50,7 +61,7 @@ public class TableViewBuilder {
     }
 
 
-    public TableView<AcademicPerson> getTable(PersonType person) {
+    public VBox getTable(PersonType person) {
         // add additional columns
         if (person == PersonType.STUDENT) {
             // remove salary column
@@ -67,9 +78,19 @@ public class TableViewBuilder {
             // add salary column for teachers
             tableView.getColumns().add(salary);
         }
+        if (searchTableviewContainer.getChildren().size() == 2) {
+            searchTableviewContainer.getChildren().remove(1);
+        }
 
-        return tableView;
+        searchTableviewContainer.getChildren().add(tableView);
+        return searchTableviewContainer;
     }
+
+    public void setTableItems(ObservableList<AcademicPerson> list) {
+        filteredData = new FilteredList<>(list);
+        tableView.setItems(filteredData);
+    }
+
 
     // clear selected row
     public void clearTableSelection() {
@@ -90,12 +111,31 @@ public class TableViewBuilder {
     }
 
     // return items of a selected row
-    public AcademicPerson getSelectedIPerson(){
-       return selectedItems.get(0);
+    public AcademicPerson getSelectedIPerson() {
+        return selectedItems.get(0);
     }
 
     // check if any row is selected
-    public boolean isRowSelected(){
+    public boolean isRowSelected() {
         return selectedItems.size() > 0;
     }
+
+    private boolean searchFindPerson(AcademicPerson person, String searchText) {
+        return (person.getFirstName().toLowerCase().startsWith(searchText.toLowerCase())) ||
+                (person.getLastName().toLowerCase().startsWith(searchText.toLowerCase())) ||
+                Integer.valueOf(person.getId()).toString().equals(searchText.toLowerCase());
+    }
+
+    private Predicate<AcademicPerson> createPredicate(String searchText) {
+        return person -> {
+            if (searchText == null || searchText.isEmpty()) return true;
+            return searchFindPerson(person, searchText.trim());
+        };
+    }
+
+    private void searchQuerylistener() {
+        mySearchForm.getTextField().textProperty().addListener((observable, oldValue, newValue) ->
+                filteredData.setPredicate(createPredicate(newValue)));
+    }
 }
+

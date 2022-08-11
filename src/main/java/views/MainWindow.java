@@ -1,12 +1,8 @@
 package views;
 
 import database.Database;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -28,13 +24,12 @@ public class MainWindow {
     Label headingLabel;
     TableViewBuilder tableViewBuilder;
     VBox vBox;
-    TableView<AcademicPerson> students;
-    TableView<AcademicPerson> teachers;
-    Pane tableViewPane;
+    VBox students;
+    VBox teachers;
+    Pane searchFormTableViewContainer;
     FormMenuOptions formMenuOptions;
     StudentTeacherForm studentTeacherForm;
     MyAlert myAlert;
-    MySearchForm mySearchForm;
 
     public MainWindow(LoginScreen screen, String loggedInUser) {
         this.screen = screen;
@@ -46,7 +41,6 @@ public class MainWindow {
         formMenuOptions = new FormMenuOptions();
         myAlert = new MyAlert();
         studentTeacherForm = new StudentTeacherForm(database);
-        mySearchForm = new MySearchForm();
         pane();
         vBox();
         menuSelectedBtn();
@@ -56,8 +50,8 @@ public class MainWindow {
     }
 
     private void pane() {
-        tableViewPane = new Pane();
-        tableViewPane.setMinWidth(800);
+        searchFormTableViewContainer = new Pane();
+        searchFormTableViewContainer.setMinWidth(800);
     }
 
     private void vBox() {
@@ -89,7 +83,7 @@ public class MainWindow {
                         // set button text to edit or add
                         studentTeacherForm.setAddEditBtnTxt(newValue.substring(0, newValue.length() - 1));
                         // get form
-                        tableViewPane.getChildren().add(studentTeacherForm.getAddEditTeacherStudentForm());
+                        searchFormTableViewContainer.getChildren().add(studentTeacherForm.getAddEditTeacherStudentForm());
                         // hide formOptions edit delete and add buttons
                         formMenuOptions.isVisible(false);
                         // clear table selection
@@ -106,7 +100,7 @@ public class MainWindow {
                     // set button text to edit or add
                     studentTeacherForm.setAddEditBtnTxt(newValue.substring(0, newValue.length() - 1));
                     // get form
-                    tableViewPane.getChildren().add(studentTeacherForm.getAddEditTeacherStudentForm());
+                    searchFormTableViewContainer.getChildren().add(studentTeacherForm.getAddEditTeacherStudentForm());
                 }
             } else if ((newValue.equals(ButtonText.DELETE_STUDENTS.toString()) || newValue.equals(ButtonText.DELETE_TEACHERS.toString())) && tableViewBuilder.isRowSelected()) {
                 AcademicPerson person = tableViewBuilder.getSelectedIPerson();
@@ -127,7 +121,7 @@ public class MainWindow {
 
     public Stage getMainScreen() {
         setHeaderLabelTxt(WELCOME_NOTE + loggedInUser);
-        vBox.getChildren().addAll(headingLabel, mySearchForm.getSearchFrom(), tableViewPane, formMenuOptions.getFromOptions());
+        vBox.getChildren().addAll(headingLabel, searchFormTableViewContainer, formMenuOptions.getFromOptions());
         Window window = new Window(new HBox(menuBuilder.getMenu(), vBox));
         stage = window.getWindow();
         stage.setHeight(650);
@@ -137,14 +131,13 @@ public class MainWindow {
         return stage;
     }
 
-    private TableView<AcademicPerson> tableView(PersonType person) {
+    private VBox tableView(PersonType person) {
+        tableViewBuilder.setTableItems(database.getPersons(person));
 
         if (person == PersonType.STUDENT) {
             students = tableViewBuilder.getTable(person);
-            students.setItems(database.getPersons(person));
         } else {
             teachers = tableViewBuilder.getTable(person);
-            teachers.setItems(database.getPersons(person));
         }
         // display form menu buttons if not visible
         formMenuOptions.isVisible(true);
@@ -159,26 +152,23 @@ public class MainWindow {
     private void showContent(MenuOption option) {
         if (option == MenuOption.DASHBOARD) {
             setHeaderLabelTxt(WELCOME_NOTE + loggedInUser);
-            mySearchForm.setFromVisibility(false);
             clearPane();
         } else if (option == MenuOption.STUDENTS) {
             setHeaderLabelTxt(MenuOption.STUDENTS.toString());
-            mySearchForm.setFromVisibility(true);
             clearPane();
             // add a child
-            tableViewPane.getChildren().add(tableView(PersonType.STUDENT));
+            searchFormTableViewContainer.getChildren().add(tableView(PersonType.STUDENT));
         } else {
             setHeaderLabelTxt(MenuOption.TEACHERS.toString());
-            mySearchForm.setFromVisibility(true);
             clearPane();
             // add a child
-            tableViewPane.getChildren().add(tableView(PersonType.TEACHER));
+            searchFormTableViewContainer.getChildren().add(tableView(PersonType.TEACHER));
         }
     }
 
     private void clearPane() {
-        if (tableViewPane.getChildren().size() > 0) {
-            tableViewPane.getChildren().clear();
+        if (searchFormTableViewContainer.getChildren().size() > 0) {
+            searchFormTableViewContainer.getChildren().clear();
         }
     }
 

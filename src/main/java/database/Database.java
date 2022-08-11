@@ -13,11 +13,11 @@ public class Database {
     public Database() {
         persons = FXCollections.observableArrayList();
 
-        persons.add(new Student(1, "Student", "12345678", "Student", "Munatsi", LocalDate.now(), StudentGroup.INFO2A.toString()));
-        persons.add(new Student(2, "Student", "12345678", "Student", "Munatsi", LocalDate.now(), StudentGroup.INFO2B.toString()));
-        persons.add(new Student(3, "Student", "12345678", "Student", "Munatsi", LocalDate.now(), StudentGroup.INFO2A.toString()));
+        persons.add(new Student(1, "Student", "12345678", "Tinashe", "Munatsi", LocalDate.now(), StudentGroup.INFO2A.toString()));
+        persons.add(new Student(2, "Student", "12345678", "Student", "Student", LocalDate.now(), StudentGroup.INFO2B.toString()));
+        persons.add(new Student(3, "Student", "12345678", "Tariro", "Bingura", LocalDate.now(), StudentGroup.INFO2A.toString()));
         persons.add(new Student(4, "Student", "12345678", "Student", "Munatsi", LocalDate.now(), StudentGroup.INFO2B.toString()));
-        persons.add(new Student(5, "Student", "12345678", "Student", "Munatsi", LocalDate.now(), StudentGroup.INFO2A.toString()));
+        persons.add(new Student(5, "Student", "12345678", "Tatenda", "Bingura", LocalDate.now(), StudentGroup.INFO2A.toString()));
         persons.add(new Student(6, "Student", "12345678", "Student", "Munatsi", LocalDate.now(), StudentGroup.INFO2B.toString()));
 
         persons.add(new Teacher(7, "Teacher", "12345678", "Teacher", "Munatsi", LocalDate.now(), 5000));
