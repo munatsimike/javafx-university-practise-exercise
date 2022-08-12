@@ -1,5 +1,8 @@
 package views;
 
+import database.Database;
+import exception.UsernameNotFoundException;
+import exception.WrongPasswordException;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import model.Student;
 
 public class LoginScreen {
     Button loginBtn;
@@ -18,9 +22,13 @@ public class LoginScreen {
     Label errorLabel;
     TextField usernameTextField;
     PasswordField passwordField;
+    Database database;
+    int wrongPassAttempts;
 
     public LoginScreen(Stage stage) {
         this.stage = stage;
+        wrongPassAttempts = 4;
+        database = new Database();
         initErrorLabel();
         initUserNameTextField();
         initPasswordField();
@@ -105,9 +113,20 @@ public class LoginScreen {
     private void loginBtnEventHandler() {
         loginBtn.setOnMouseClicked(e -> {
             if (usernameTextField.getStyleClass().contains("green-border") && passwordField.getStyleClass().contains("green-border")) {
-                MainWindow mainWindow = new MainWindow(this, usernameTextField.getText());
-                mainWindow.getMainScreen().show();
-                stage.hide();
+                try {
+                    database.isUserRegister(new Student(usernameTextField.getText(), passwordField.getText()));
+                    MainWindow mainWindow = new MainWindow(this, usernameTextField.getText());
+                    mainWindow.getMainScreen().show();
+                    stage.hide();
+                } catch (UsernameNotFoundException msg) {
+                    errorLabel.setText(msg.toString());
+                } catch (WrongPasswordException msg) {
+                    if (wrongPassAttempts != 0) {
+                        errorLabel.setText(msg + " " + wrongPassAttempts-- + " attempts left");
+                    } else {
+                        errorLabel.setText("To many attempts account blocked");
+                    }
+                }
             }
         });
     }
@@ -140,9 +159,11 @@ public class LoginScreen {
                     if (!textField.getStyleClass().contains("green-border")) {
                         // set green border
                         textField.getStyleClass().add("green-border");
-                        errorLabel.setText("");
+                        clearErrorLabel();
                     }
                 }
+            } else {
+                clearField(textField);
             }
         });
     }
@@ -178,5 +199,4 @@ public class LoginScreen {
     private void clearErrorLabel() {
         errorLabel.setText("");
     }
-
 }

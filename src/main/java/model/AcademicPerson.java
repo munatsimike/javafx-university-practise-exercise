@@ -9,6 +9,10 @@ import java.util.List;
 public abstract class AcademicPerson extends Person {
     LocalDate birth_date;
 
+    public AcademicPerson(String username, String password) {
+        super(username, password);
+    }
+
     public LocalDate getBirth_date() {
         return birth_date;
     }
