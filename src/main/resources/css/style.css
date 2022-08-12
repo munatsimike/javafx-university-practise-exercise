@@ -1,5 +1,5 @@
 
-.white-text-fill, .login-btn, .heading, .toggle-button, .menu-logo, .table-view, .delete-btn, .add-btn, .edit-btn, .cancel-btn {
+.white-text-fill, .login-btn, .heading, .toggle-button, .menu-logo, .table-view, .delete-btn, .add-btn, .edit-btn, .cancel-btn, .logout-btn {
     -fx-text-fill: white;
 }
 
@@ -7,7 +7,7 @@
     -fx-text-fill: red;
 }
 
-.blue-background, .separator .line, .toggle-button{
+.blue-background, .separator .line, .toggle-button, .logout-btn{
     -fx-background-color: black;
 }
 
@@ -54,11 +54,14 @@
     -fx-border-color: red;
 }
 
+.logout-btn{}
+
+
 .green-border {
     -fx-border-color: rgb(0, 201, 87);
 }
 
-.grey-background, .cancel-btn, .edit-btn, .toggle-button:selected {
+.grey-background, .cancel-btn, .edit-btn, .toggle-button:selected{
     -fx-background-color: grey;
 }
 

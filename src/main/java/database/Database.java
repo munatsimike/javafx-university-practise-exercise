@@ -1,10 +1,13 @@
 package database;
 
+import exception.UsernameNotFoundException;
+import exception.WrongPasswordException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.*;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Database {
@@ -67,5 +70,19 @@ public class Database {
 
     public void deletePerson(int id) {
         persons.removeIf(person -> person.getId() == id);
+    }
+
+    public AcademicPerson isUserRegister(AcademicPerson user) throws UsernameNotFoundException, WrongPasswordException {
+        //check if username is correct
+        AcademicPerson person = persons.stream()
+                .filter(usr -> usr.getUserName().equals(user.getUserName()))
+                .findFirst()
+                .orElseThrow(UsernameNotFoundException::new);
+
+        // check if password is correct
+        if (!Objects.equals(person.getPassword(), user.getPassword()))
+            throw new WrongPasswordException();
+
+        return person;
     }
 }

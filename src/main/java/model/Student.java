@@ -5,6 +5,10 @@ import java.time.LocalDate;
 public class Student extends AcademicPerson {
     String group;
 
+    public Student(String username, String password) {
+        super(username, password);
+    }
+
     public void setGroup(String group) {
         this.group = group;
     }

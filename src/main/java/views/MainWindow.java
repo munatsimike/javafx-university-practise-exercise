@@ -2,7 +2,10 @@ package views;
 
 import database.Database;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -16,28 +19,30 @@ import java.util.Objects;
 
 public class MainWindow {
     final static String WELCOME_NOTE = "Welcome ";
-    LoginScreen screen;
+    LoginScreen loginScreen;
     String loggedInUser;
     Stage stage;
     MenuBuilder menuBuilder;
     Database database;
+    Button logoutBtn;
     Label headingLabel;
     TableViewBuilder tableViewBuilder;
-    VBox vBox;
-    VBox students;
-    VBox teachers;
-    Pane searchFormTableViewContainer;
+    VBox mainWindowContainervBox;
+    VBox studentsTableViewContainer;
+    VBox teachersTableViewContainer;
+    Pane mainWindowTableViewContainer;
     FormMenuOptions formMenuOptions;
     StudentTeacherForm studentTeacherForm;
     MyAlert myAlert;
 
     public MainWindow(LoginScreen screen, String loggedInUser) {
-        this.screen = screen;
+        loginScreen = screen;
         this.loggedInUser = loggedInUser;
         tableViewBuilder = new TableViewBuilder();
         menuBuilder = new MenuBuilder();
         database = new Database();
         headingLabel = new Label();
+        logoutBtn = new Button("Logout");
         formMenuOptions = new FormMenuOptions();
         myAlert = new MyAlert();
         studentTeacherForm = new StudentTeacherForm(database);
@@ -47,17 +52,18 @@ public class MainWindow {
         formMenuOptionChangeListener();
         cancelBtnChangeListener();
         alertStatusEventHandler();
+        logoutBtnClickListener();
     }
 
     private void pane() {
-        searchFormTableViewContainer = new Pane();
-        searchFormTableViewContainer.setMinWidth(800);
+        mainWindowTableViewContainer = new Pane();
+        mainWindowTableViewContainer.setMinWidth(800);
     }
 
     private void vBox() {
-        vBox = new VBox(25);
-        vBox.setPadding(new Insets(20));
-        vBox.setStyle("-fx-background-color: white");
+        mainWindowContainervBox = new VBox(25);
+        mainWindowContainervBox.setPadding(new Insets(20));
+        mainWindowContainervBox.setStyle("-fx-background-color: white");
     }
 
     private void menuSelectedBtn() {
@@ -83,7 +89,7 @@ public class MainWindow {
                         // set button text to edit or add
                         studentTeacherForm.setAddEditBtnTxt(newValue.substring(0, newValue.length() - 1));
                         // get form
-                        searchFormTableViewContainer.getChildren().add(studentTeacherForm.getAddEditTeacherStudentForm());
+                        mainWindowTableViewContainer.getChildren().add(studentTeacherForm.getAddEditTeacherStudentForm());
                         // hide formOptions edit delete and add buttons
                         formMenuOptions.isVisible(false);
                         // clear table selection
@@ -100,7 +106,7 @@ public class MainWindow {
                     // set button text to edit or add
                     studentTeacherForm.setAddEditBtnTxt(newValue.substring(0, newValue.length() - 1));
                     // get form
-                    searchFormTableViewContainer.getChildren().add(studentTeacherForm.getAddEditTeacherStudentForm());
+                    mainWindowTableViewContainer.getChildren().add(studentTeacherForm.getAddEditTeacherStudentForm());
                 }
             } else if ((newValue.equals(ButtonText.DELETE_STUDENTS.toString()) || newValue.equals(ButtonText.DELETE_TEACHERS.toString())) && tableViewBuilder.isRowSelected()) {
                 AcademicPerson person = tableViewBuilder.getSelectedIPerson();
@@ -121,32 +127,48 @@ public class MainWindow {
 
     public Stage getMainScreen() {
         setHeaderLabelTxt(WELCOME_NOTE + loggedInUser);
-        vBox.getChildren().addAll(headingLabel, searchFormTableViewContainer, formMenuOptions.getFromOptions());
-        Window window = new Window(new HBox(menuBuilder.getMenu(), vBox));
+        if (mainWindowContainervBox.getChildren().size() == 0)
+            mainWindowContainervBox.getChildren().addAll(loginBtnHbox(), headingLabel, mainWindowTableViewContainer, formMenuOptions.getFromOptions());
+        Window window = new Window(new HBox(menuBuilder.getMenu(), mainWindowContainervBox));
         stage = window.getWindow();
-        stage.setHeight(650);
+        stage.setHeight(680);
         stage.setWidth(1024);
         stage.initStyle(StageStyle.UNDECORATED);
         showLoginScreen();
         return stage;
     }
 
+    private GridPane loginBtnHbox() {
+        logoutBtn.getStyleClass().add("logout-btn");
+        GridPane loginBtnContainer = new GridPane();
+        loginBtnContainer.addRow(0, logoutBtn);
+        loginBtnContainer.setAlignment(Pos.TOP_RIGHT);
+        return loginBtnContainer;
+    }
+
+    private void logoutBtnClickListener() {
+        logoutBtn.setOnMouseClicked(mouseEvent -> {
+            loginScreen.stage.show();
+            this.stage.hide();
+        });
+    }
+
     private VBox tableView(PersonType person) {
         tableViewBuilder.setTableItems(database.getPersons(person));
 
         if (person == PersonType.STUDENT) {
-            students = tableViewBuilder.getTable(person);
+            studentsTableViewContainer = tableViewBuilder.getTable(person);
         } else {
-            teachers = tableViewBuilder.getTable(person);
+            teachersTableViewContainer = tableViewBuilder.getTable(person);
         }
         // display form menu buttons if not visible
         formMenuOptions.isVisible(true);
 
-        return (person == PersonType.STUDENT) ? students : teachers;
+        return (person == PersonType.STUDENT) ? studentsTableViewContainer : teachersTableViewContainer;
     }
 
     private void showLoginScreen() {
-        stage.setOnCloseRequest(e -> screen.stage.show());
+        stage.setOnCloseRequest(e -> loginScreen.stage.show());
     }
 
     private void showContent(MenuOption option) {
@@ -157,25 +179,25 @@ public class MainWindow {
             setHeaderLabelTxt(MenuOption.STUDENTS.toString());
             clearPane();
             // add a child
-            searchFormTableViewContainer.getChildren().add(tableView(PersonType.STUDENT));
+            mainWindowTableViewContainer.getChildren().add(tableView(PersonType.STUDENT));
         } else {
             setHeaderLabelTxt(MenuOption.TEACHERS.toString());
             clearPane();
             // add a child
-            searchFormTableViewContainer.getChildren().add(tableView(PersonType.TEACHER));
+            mainWindowTableViewContainer.getChildren().add(tableView(PersonType.TEACHER));
         }
     }
 
     private void clearPane() {
-        if (searchFormTableViewContainer.getChildren().size() > 0) {
-            searchFormTableViewContainer.getChildren().clear();
+        if (mainWindowTableViewContainer.getChildren().size() > 0) {
+            mainWindowTableViewContainer.getChildren().clear();
         }
     }
 
     private void setHeaderLabelTxt(String txt) {
         headingLabel.setText(txt);
-        headingLabel.setFont(Font.font("Arial", FontPosture.REGULAR, 30));
-        headingLabel.setPadding(new Insets(0, 0, 25, 0));
+        headingLabel.setFont(Font.font("Arial", FontPosture.REGULAR, 27));
+        headingLabel.setPadding(new Insets(0, 0, 18, 0));
     }
 
     // listen to form cancel button clicks

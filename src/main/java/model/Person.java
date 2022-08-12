@@ -48,10 +48,14 @@ public abstract class Person {
     }
 
     public Person(int id, String userName, String password, String firstName, String lastName) {
+        this(userName,password);
         this.id = id;
-        this.userName = userName;
-        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public Person(String userName, String password){
+        this.userName = userName;
+        this.password = password;
     }
 }
