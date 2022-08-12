@@ -111,9 +111,10 @@ public class MainWindow {
             } else if ((newValue.equals(ButtonText.DELETE_STUDENTS.toString()) || newValue.equals(ButtonText.DELETE_TEACHERS.toString())) && tableViewBuilder.isRowSelected()) {
                 AcademicPerson person = tableViewBuilder.getSelectedIPerson();
                 // delete person
-                myAlert.confirmationAlert("Are you sure you want to delete: " + person.getFirstName() + " " + person.getLastName())
+                String firstBtnText = "Delete";
+                myAlert.confirmationAlert(firstBtnText, "Are you sure you want to delete: " + person.getFirstName() + " " + person.getLastName())
                         .showAndWait()
-                        .filter(response -> Objects.equals(response.getText(), "Delete"))
+                        .filter(response -> Objects.equals(response.getText(), firstBtnText))
                         .ifPresent(response -> database.deletePerson(person.getId()));
 
                 if (person instanceof Student) {
@@ -148,8 +149,14 @@ public class MainWindow {
 
     private void logoutBtnClickListener() {
         logoutBtn.setOnMouseClicked(mouseEvent -> {
-            loginScreen.stage.show();
-            this.stage.hide();
+            String firstBtnText = "Logout";
+            myAlert.confirmationAlert(firstBtnText, "Are you sure you want to logout")
+                    .showAndWait()
+                    .filter(response -> Objects.equals(response.getText(), firstBtnText))
+                    .ifPresent(response -> {
+                        loginScreen.stage.show();
+                        this.stage.hide();
+                    });
         });
     }
 
