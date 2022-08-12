@@ -15,6 +15,9 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.Student;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LoginScreen {
     Button loginBtn;
     Button cancelBtn;
@@ -24,10 +27,11 @@ public class LoginScreen {
     PasswordField passwordField;
     Database database;
     int wrongPassAttempts;
+    List<String> blockedAccounts;
 
     public LoginScreen(Stage stage) {
         this.stage = stage;
-        wrongPassAttempts = 4;
+        blockedAccounts = new ArrayList<>();
         database = new Database();
         initErrorLabel();
         initUserNameTextField();
@@ -37,6 +41,11 @@ public class LoginScreen {
         usernameTextFieldFocusChangeListener();
         passwordFieldFieldFocusChangeListener();
         oncloseListener();
+        initWrongPassAttempts();
+    }
+
+    private void initWrongPassAttempts() {
+        wrongPassAttempts = 4;
     }
 
     public Stage getLoginScreen() {
@@ -113,6 +122,17 @@ public class LoginScreen {
     private void loginBtnEventHandler() {
         loginBtn.setOnMouseClicked(e -> {
             if (usernameTextField.getStyleClass().contains("green-border") && passwordField.getStyleClass().contains("green-border")) {
+
+                if (wrongPassAttempts == 0) {
+                    blockedAccounts.add(usernameTextField.getText());
+                    initWrongPassAttempts();
+                }
+
+                if (blockedAccounts.contains(usernameTextField.getText())) {
+                    errorLabel.setText("Account blocked contact admin");
+                    return;
+                }
+
                 try {
                     database.isUserRegister(new Student(usernameTextField.getText(), passwordField.getText()));
                     MainWindow mainWindow = new MainWindow(this, usernameTextField.getText());
@@ -136,24 +156,26 @@ public class LoginScreen {
     }
 
     private void usernameTextFieldFocusChangeListener() {
-        validateField(usernameTextField, 3);
+        validateField(usernameTextField);
     }
 
     private void passwordFieldFieldFocusChangeListener() {
-        validateField(passwordField, 8);
+        validateField(passwordField);
     }
 
-    private void validateField(TextField textField, int textLength) {
+    private void validateField(TextField textField) {
         textField.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (!t1) {
-                if (textField.getText().length() < textLength) {
+                if (textField.getPromptText().equals("Username") && !isValidUsername(usernameTextField.getText())) {
                     // set error message
-                    errorLabel.setText(textField.getPromptText() + " is too short, " + textField.getPromptText().toLowerCase() + " should be at least " + textLength + " characters long");
+                    errorLabel.setText(textField.getPromptText() + " is too short, " + textField.getPromptText().toLowerCase() + " should be at least  characters long");
                     setBorderErrorLabelVisibility(textField);
-                } else if (textField.getText().isEmpty()) {
+
+                } else if (textField.getPromptText().equals("Password") && !isValidPassword(passwordField.getText())) {
                     // set error message
                     errorLabel.setText(textField.getPromptText() + " field cannot be empty");
                     setBorderErrorLabelVisibility(textField);
+
                 } else {
                     // check if a field contains green border
                     if (!textField.getStyleClass().contains("green-border")) {
@@ -198,5 +220,15 @@ public class LoginScreen {
     // clear label text and hide error label
     private void clearErrorLabel() {
         errorLabel.setText("");
+    }
+
+    // can only contain letters, numbers and length 8-20 characters
+    public boolean isValidUsername(String userName) {
+        return userName.matches("^[a-zA-Z0-9_.]{8,20}$");
+    }
+
+    /// digit + lowercase char + uppercase char + punctuation + symbol
+    public boolean isValidPassword(String password) {
+        return password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$");
     }
 }
