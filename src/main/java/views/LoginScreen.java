@@ -15,11 +15,20 @@ public class LoginScreen {
     Button loginBtn;
     Button cancelBtn;
     Stage stage;
-    MainWindow mainWindow;
+    Label errorLabel;
+    TextField usernameTextField;
+    PasswordField passwordField;
 
     public LoginScreen(Stage stage) {
         this.stage = stage;
-        mainWindow = new MainWindow(this, "Michael");
+        initErrorLabel();
+        initUserNameTextField();
+        initPasswordField();
+        initLoginBtn();
+        initCancelBtn();
+        usernameTextFieldFocusChangeListener();
+        passwordFieldFieldFocusChangeListener();
+        oncloseListener();
     }
 
     public Stage getLoginScreen() {
@@ -27,42 +36,46 @@ public class LoginScreen {
         scene.getStylesheets().add("css/style.css");
         stage.setTitle("Login");
         stage.setWidth(512);
-        stage.setHeight(350);
+        stage.setHeight(400);
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
+
         return stage;
     }
 
-    private TextField userNameTextField() {
-        TextField usernameTextField = new TextField();
+    private void initErrorLabel() {
+        errorLabel = new Label();
+        errorLabel.getStyleClass().add("error-label-text-color");
+    }
+
+    private void initUserNameTextField() {
+        usernameTextField = new TextField();
         usernameTextField.setPromptText("Username");
-        return usernameTextField;
+        usernameTextField.setFocusTraversable(false);
     }
 
-    private PasswordField setPasswordField() {
-        PasswordField passwordField = new PasswordField();
+    private void initPasswordField() {
+        passwordField = new PasswordField();
         passwordField.setPromptText("Password");
-        return passwordField;
+        passwordField.setFocusTraversable(false);
     }
 
-    private Button loginBtn() {
+    private void initLoginBtn() {
         loginBtn = new Button("Login");
         loginBtn.getStyleClass().add("login-btn");
         loginBtnEventHandler();
-        return loginBtn;
     }
 
-    private Button cancelBtn() {
+    private void initCancelBtn() {
         cancelBtn = new Button("Cancel");
         cancelBtn.getStyleClass().add("cancel-btn");
         cancelBtnEventHandler();
-        return cancelBtn;
     }
 
     private VBox vBox() {
         VBox vBox = new VBox(20);
         vBox.setPadding(new Insets(40));
-        vBox.getChildren().addAll(userNameTextField(), setPasswordField(), loginBtn(), cancelBtn());
+        vBox.getChildren().addAll(errorLabel, usernameTextField, passwordField, loginBtn, cancelBtn);
         vBox.setAlignment(Pos.CENTER);
         Separator separator = new Separator();
         return new VBox(title(), separator, vBox);
@@ -91,14 +104,79 @@ public class LoginScreen {
 
     private void loginBtnEventHandler() {
         loginBtn.setOnMouseClicked(e -> {
-            stage.hide();
-            mainWindow.getMainScreen().show();
+            if (usernameTextField.getStyleClass().contains("green-border") && passwordField.getStyleClass().contains("green-border")) {
+                MainWindow mainWindow = new MainWindow(this, usernameTextField.getText());
+                mainWindow.getMainScreen().show();
+                stage.hide();
+            }
         });
     }
 
     private void cancelBtnEventHandler() {
-        cancelBtn.setOnMouseClicked(e -> {
-            stage.close();
+        cancelBtn.setOnMouseClicked(e -> stage.close());
+    }
+
+    private void usernameTextFieldFocusChangeListener() {
+        validateField(usernameTextField, 3);
+    }
+
+    private void passwordFieldFieldFocusChangeListener() {
+        validateField(passwordField, 8);
+    }
+
+    private void validateField(TextField textField, int textLength) {
+        textField.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (!t1) {
+                if (textField.getText().length() < textLength) {
+                    // set error message
+                    errorLabel.setText(textField.getPromptText() + " is too short, " + textField.getPromptText().toLowerCase() + " should be at least " + textLength + " characters long");
+                    setBorderErrorLabelVisibility(textField);
+                } else if (textField.getText().isEmpty()) {
+                    // set error message
+                    errorLabel.setText(textField.getPromptText() + " field cannot be empty");
+                    setBorderErrorLabelVisibility(textField);
+                } else {
+                    // check if a field contains green border
+                    if (!textField.getStyleClass().contains("green-border")) {
+                        // set green border
+                        textField.getStyleClass().add("green-border");
+                        errorLabel.setText("");
+                    }
+                }
+            }
         });
     }
+
+    // set red border on invalid text field input and show error
+    private void setBorderErrorLabelVisibility(TextField textField) {
+        // remove green border if present
+        textField.getStyleClass().remove("green-border");
+
+        // set red border on a text field
+        if (!textField.getStyleClass().contains("red-border")) {
+            textField.getStyleClass().add("red-border");
+        }
+    }
+
+    // clear form on hiding the login window
+    private void oncloseListener() {
+        stage.setOnHiding(windowEvent -> {
+            clearField(usernameTextField);
+            clearField(passwordField);
+            clearErrorLabel();
+        });
+    }
+
+    // clear username and password: remove green, red border and clear text
+    private void clearField(TextField textField) {
+        textField.getStyleClass().remove("red-border");
+        textField.getStyleClass().remove("green-border");
+        textField.setText("");
+    }
+
+    // clear label text and hide error label
+    private void clearErrorLabel() {
+        errorLabel.setText("");
+    }
+
 }

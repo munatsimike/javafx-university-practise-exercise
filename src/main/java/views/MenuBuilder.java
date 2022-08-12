@@ -14,14 +14,14 @@ import javafx.scene.layout.VBox;
 import model.MenuOption;
 
 public class MenuBuilder {
-    VBox vBox;
+    VBox menuItemsContainervBox;
     ToggleButton dashboard;
     ToggleButton students;
     ToggleButton teachers;
     StringProperty selectedBtn;
 
     public MenuBuilder() {
-        vBox = new VBox(20);
+        menuItemsContainervBox = new VBox(20);
         selectedBtn = new SimpleStringProperty("");
         menuBtn();
         toggle();
@@ -36,11 +36,12 @@ public class MenuBuilder {
     }
 
     public VBox getMenu() {
-        vBox.setPrefWidth(175);
-        vBox.getStyleClass().add("sky-blue-background");
-        vBox.setAlignment(Pos.BASELINE_CENTER);
-        vBox.getChildren().addAll(logoTitle(), dashboard, students, teachers);
-        return vBox;
+        menuItemsContainervBox.setPrefWidth(175);
+        menuItemsContainervBox.getStyleClass().add("sky-blue-background");
+        menuItemsContainervBox.setAlignment(Pos.BASELINE_CENTER);
+        if (menuItemsContainervBox.getChildren().size() == 0)
+            menuItemsContainervBox.getChildren().addAll(logoTitle(), dashboard, students, teachers);
+        return menuItemsContainervBox;
     }
 
     private void toggle() {
