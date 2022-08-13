@@ -1,6 +1,8 @@
 package views;
 
 import database.Database;
+import enums.ButtonText;
+import enums.StudentGroup;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.*;

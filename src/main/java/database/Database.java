@@ -1,5 +1,7 @@
 package database;
 
+import enums.PersonType;
+import enums.StudentGroup;
 import exception.UsernameNotFoundException;
 import exception.WrongPasswordException;
 import javafx.collections.FXCollections;

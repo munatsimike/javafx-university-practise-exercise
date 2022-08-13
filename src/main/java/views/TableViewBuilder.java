@@ -10,7 +10,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import model.AcademicPerson;
 import model.Person;
-import model.PersonType;
+import enums.PersonType;
 
 import java.util.Date;
 import java.util.function.Predicate;
