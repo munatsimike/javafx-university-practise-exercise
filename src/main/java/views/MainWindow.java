@@ -31,7 +31,7 @@ public class MainWindow {
     VBox studentsTableViewContainer;
     VBox teachersTableViewContainer;
     Pane mainWindowTableViewContainer;
-    FormMenuOptions formMenuOptions;
+    FormMenuOptions deleteEditAddBtn;
     StudentTeacherForm studentTeacherForm;
     MyAlert myAlert;
 
@@ -43,7 +43,7 @@ public class MainWindow {
         database = new Database();
         headingLabel = new Label();
         logoutBtn = new Button("Logout");
-        formMenuOptions = new FormMenuOptions();
+        deleteEditAddBtn = new FormMenuOptions();
         myAlert = new MyAlert();
         studentTeacherForm = new StudentTeacherForm(database);
         pane();
@@ -53,6 +53,7 @@ public class MainWindow {
         cancelBtnChangeListener();
         alertStatusEventHandler();
         logoutBtnClickListener();
+
     }
 
     private void pane() {
@@ -70,14 +71,14 @@ public class MainWindow {
         menuBuilder.selectedBtn().addListener((observableValue, s, t1) -> {
             if (s != null) {
                 showContent(MenuOption.valueOf(t1.toUpperCase()));
-                formMenuOptions.setBtnTex(MenuOption.valueOf(t1.toUpperCase()));
+                deleteEditAddBtn.setBtnTex(MenuOption.valueOf(t1.toUpperCase()));
             }
         });
     }
 
     // listen to delete, edit and add button clicks
     private void formMenuOptionChangeListener() {
-        formMenuOptions.getPressedBtn().addListener((observable, oldValue, newValue) -> {
+        deleteEditAddBtn.getPressedBtn().addListener((observable, oldValue, newValue) -> {
             if (newValue.equals(ButtonText.ADD_STUDENTS.toString()) || newValue.equals(ButtonText.EDIT_STUDENTS.toString())) {
                 if (newValue.equals(ButtonText.EDIT_STUDENTS.toString())) {
                     if (tableViewBuilder.isRowSelected()) {
@@ -91,7 +92,7 @@ public class MainWindow {
                         // get form
                         mainWindowTableViewContainer.getChildren().add(studentTeacherForm.getAddEditTeacherStudentForm());
                         // hide formOptions edit delete and add buttons
-                        formMenuOptions.isVisible(false);
+                        deleteEditAddBtn.setVisibility(false);
                         // clear table selection
                         tableViewBuilder.clearTableSelection();
 
@@ -102,7 +103,7 @@ public class MainWindow {
                     // set heading: add students
                     headingLabel.setText(newValue);
                     // hide formOptions edit delete and add buttons
-                    formMenuOptions.isVisible(false);
+                    deleteEditAddBtn.setVisibility(false);
                     // set button text to edit or add
                     studentTeacherForm.setAddEditBtnTxt(newValue.substring(0, newValue.length() - 1));
                     // get form
@@ -129,7 +130,7 @@ public class MainWindow {
     public Stage getMainScreen() {
         setHeaderLabelTxt(WELCOME_NOTE + loggedInUser);
         if (mainWindowContainervBox.getChildren().size() == 0)
-            mainWindowContainervBox.getChildren().addAll(loginBtnHbox(), headingLabel, mainWindowTableViewContainer, formMenuOptions.getFromOptions());
+            mainWindowContainervBox.getChildren().addAll(loginBtnHbox(), headingLabel, mainWindowTableViewContainer, deleteEditAddBtn.getFromOptions());
         Window window = new Window(new HBox(menuBuilder.getMenu(), mainWindowContainervBox));
         stage = window.getWindow();
         stage.setHeight(680);
@@ -169,7 +170,7 @@ public class MainWindow {
             teachersTableViewContainer = tableViewBuilder.getTable(person);
         }
         // display form menu buttons if not visible
-        formMenuOptions.isVisible(true);
+        deleteEditAddBtn.setVisibility(true);
 
         return (person == PersonType.STUDENT) ? studentsTableViewContainer : teachersTableViewContainer;
     }

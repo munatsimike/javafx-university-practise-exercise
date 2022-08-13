@@ -38,7 +38,7 @@ public class FormMenuOptions implements EventHandler<ActionEvent> {
         editDeleteAddBtnHbox = new HBox();
         editDeleteAddBtnHbox.setSpacing(25);
         editDeleteAddBtnHbox.getChildren().addAll(addButton, editButton, deleteButton);
-        isVisible(false);
+        setVisibility(false);
     }
 
     private void clearPressedBtnIndicator() {
@@ -67,7 +67,7 @@ public class FormMenuOptions implements EventHandler<ActionEvent> {
             editButton.setText(ButtonText.EDIT_TEACHERS.toString());
             deleteButton.setText(ButtonText.DELETE_TEACHERS.toString());
         } else {
-            isVisible(false);
+            setVisibility(false);
         }
     }
 
@@ -77,7 +77,7 @@ public class FormMenuOptions implements EventHandler<ActionEvent> {
     }
 
     // show or hide add, edit and delete buttons
-    public void isVisible(Boolean visibility) {
+    public void setVisibility(Boolean visibility) {
         if (visibility && !editDeleteAddBtnHbox.isVisible()) {
             editDeleteAddBtnHbox.setVisible(true);
             clearPressedBtnIndicator();
@@ -85,6 +85,7 @@ public class FormMenuOptions implements EventHandler<ActionEvent> {
             editDeleteAddBtnHbox.setVisible(false);
         }
     }
+
 
     @Override
     public void handle(ActionEvent actionEvent) {

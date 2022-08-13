@@ -28,11 +28,13 @@ public class LoginScreen {
     Database database;
     int wrongPassAttempts;
     List<String> blockedAccounts;
+    Label registerLabel;
 
     public LoginScreen(Stage stage) {
         this.stage = stage;
         blockedAccounts = new ArrayList<>();
         database = new Database();
+        registerLabel = new Label("Register");
         initErrorLabel();
         initUserNameTextField();
         initPasswordField();
@@ -42,6 +44,8 @@ public class LoginScreen {
         passwordFieldFieldFocusChangeListener();
         oncloseListener();
         initWrongPassAttempts();
+        usernameTextField.setText("Student2");
+        passwordField.setText("RukudzoM7*");
     }
 
     private void initWrongPassAttempts() {
@@ -92,7 +96,7 @@ public class LoginScreen {
     private VBox vBox() {
         VBox vBox = new VBox(20);
         vBox.setPadding(new Insets(40));
-        vBox.getChildren().addAll(errorLabel, usernameTextField, passwordField, loginBtn, cancelBtn);
+        vBox.getChildren().addAll(errorLabel, usernameTextField, passwordField, loginBtn, cancelBtn, registerLabel);
         vBox.setAlignment(Pos.CENTER);
         Separator separator = new Separator();
         return new VBox(title(), separator, vBox);
@@ -134,7 +138,7 @@ public class LoginScreen {
                 }
 
                 try {
-                    database.isUserRegister(new Student(usernameTextField.getText(), passwordField.getText()));
+                    database.isUserRegister(new Student(usernameTextField.getText().trim(), passwordField.getText().trim()));
                     MainWindow mainWindow = new MainWindow(this, usernameTextField.getText());
                     mainWindow.getMainScreen().show();
                     stage.hide();
@@ -167,16 +171,24 @@ public class LoginScreen {
         textField.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
             if (!t1) {
                 if (textField.getPromptText().equals("Username") && !isValidUsername(usernameTextField.getText())) {
-                    // set error message
-                    errorLabel.setText(textField.getPromptText() + " is too short, " + textField.getPromptText().toLowerCase() + " should be at least  characters long");
-                    setBorderErrorLabelVisibility(textField);
+
+                    if (!passwordField.getStyleClass().contains("red-border")) {
+                        // set error message
+                        errorLabel.setText(textField.getPromptText() + " is too short, " + textField.getPromptText().toLowerCase() + " should be at least  characters long");
+                        setBorderErrorLabelVisibility(textField);
+                    }
 
                 } else if (textField.getPromptText().equals("Password") && !isValidPassword(passwordField.getText())) {
-                    // set error message
-                    errorLabel.setText(textField.getPromptText() + " field cannot be empty");
-                    setBorderErrorLabelVisibility(textField);
+
+                    if (!usernameTextField.getStyleClass().contains("red-border")) {
+                        // set error message
+                        errorLabel.setText(textField.getPromptText() + " field cannot be empty");
+                        setBorderErrorLabelVisibility(textField);
+                    }
 
                 } else {
+                    textField.getStyleClass().remove("red-border");
+
                     // check if a field contains green border
                     if (!textField.getStyleClass().contains("green-border")) {
                         // set green border
@@ -184,8 +196,6 @@ public class LoginScreen {
                         clearErrorLabel();
                     }
                 }
-            } else {
-                clearField(textField);
             }
         });
     }
@@ -224,7 +234,7 @@ public class LoginScreen {
 
     // can only contain letters, numbers and length 8-20 characters
     public boolean isValidUsername(String userName) {
-        return userName.matches("^[a-zA-Z0-9_.]{8,20}$");
+        return userName.matches("^[a-zA-Z0-9_.]{6,20}$");
     }
 
     /// digit + lowercase char + uppercase char + punctuation + symbol

@@ -16,17 +16,17 @@ public class Database {
     public Database() {
         persons = FXCollections.observableArrayList();
 
-        persons.add(new Student(1, "Student", "12345678", "Tinashe", "Munatsi", LocalDate.now(), StudentGroup.INFO2A.toString()));
-        persons.add(new Student(2, "Student", "12345678", "Student", "Student", LocalDate.now(), StudentGroup.INFO2B.toString()));
-        persons.add(new Student(3, "Student", "12345678", "Tariro", "Bingura", LocalDate.now(), StudentGroup.INFO2A.toString()));
-        persons.add(new Student(4, "Student", "12345678", "Student", "Munatsi", LocalDate.now(), StudentGroup.INFO2B.toString()));
-        persons.add(new Student(5, "Student", "12345678", "Tatenda", "Bingura", LocalDate.now(), StudentGroup.INFO2A.toString()));
-        persons.add(new Student(6, "Student", "12345678", "Student", "Munatsi", LocalDate.now(), StudentGroup.INFO2B.toString()));
+        persons.add(new Student(1, "Student1", "12345678", "Tinashe", "Munatsi", LocalDate.now(), StudentGroup.INFO2A.toString()));
+        persons.add(new Student(2, "Student2", "RukudzoM7*", "Student", "Student", LocalDate.now(), StudentGroup.INFO2B.toString()));
+        persons.add(new Student(3, "Student3", "12345678", "Tariro", "Bingura", LocalDate.now(), StudentGroup.INFO2A.toString()));
+        persons.add(new Student(4, "Student4", "12345678", "Student", "Munatsi", LocalDate.now(), StudentGroup.INFO2B.toString()));
+        persons.add(new Student(5, "Student5", "12345678", "Tatenda", "Bingura", LocalDate.now(), StudentGroup.INFO2A.toString()));
+        persons.add(new Student(6, "Student6", "RukudzoM7*", "Student", "Munatsi", LocalDate.now(), StudentGroup.INFO2B.toString()));
 
-        persons.add(new Teacher(7, "Teacher", "12345678", "Teacher", "Munatsi", LocalDate.now(), 5000));
-        persons.add(new Teacher(8, "Teacher", "12345678", "Teacher", "Munatsi", LocalDate.now(), 5000));
-        persons.add(new Teacher(9, "Teacher", "12345678", "Teacher", "Munatsi", LocalDate.now(), 5000));
-        persons.add(new Teacher(10, "Teacher", "12345678", "Teacher", "Munatsi", LocalDate.now(), 5000));
+        persons.add(new Teacher(7, "Teacher1", "12345678", "Teacher", "Munatsi", LocalDate.now(), 5000));
+        persons.add(new Teacher(8, "Teacher2", "12345678", "Teacher", "Munatsi", LocalDate.now(), 5000));
+        persons.add(new Teacher(9, "Teacher3", "RukudzoM7*", "Teacher", "Munatsi", LocalDate.now(), 5000));
+        persons.add(new Teacher(10, "Teacher4", "12345678", "Teacher", "Munatsi", LocalDate.now(), 5000));
     }
 
     public ObservableList<AcademicPerson> getPersons(PersonType personType) {
