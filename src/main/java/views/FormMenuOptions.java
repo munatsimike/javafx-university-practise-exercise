@@ -6,8 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
-import model.ButtonText;
-import model.MenuOption;
+import enums.ButtonText;
+import enums.MenuOption;
 
 public class FormMenuOptions implements EventHandler<ActionEvent> {
 

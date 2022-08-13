@@ -1,6 +1,9 @@
 package views;
 
 import database.Database;
+import enums.ButtonText;
+import enums.MenuOption;
+import enums.PersonType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
